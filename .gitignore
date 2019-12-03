@@ -1,0 +1,11 @@
+HELP.md
+target/
+logs/
+.mvn/*
+mvnw.cmd
+mvnw
+.gitattributes
+.idea
+*.iws
+*.iml
+*.ipr
