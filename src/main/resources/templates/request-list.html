@@ -42,12 +42,14 @@
                     </tr>
             </table>
         </div>
-        <ul class="pagination"><li th:class="page-item" th:if="${requests.getTotalPages() > 1}" class="pagination"
-                 th:each="pageNumber : ${#numbers.sequence(1, requests.getTotalPages())}"
-                                   th:classappend="${pageNumber==requests.number + 1} ? 'active'">
-            <a th:class="page-link" th:href="@{requests(page=${pageNumber}-1)}"
-               th:text=${pageNumber}></a>
-        </li></ul>
+        <ul class="pagination">
+            <li th:class="page-item" th:if="${requests.getTotalPages() > 1}" class="pagination"
+                th:each="pageNumber : ${#numbers.sequence(1, requests.getTotalPages())}"
+                th:classappend="${pageNumber==requests.number + 1} ? 'active'">
+                <a th:class="page-link" th:href="@{requests(page=${pageNumber}-1)}"
+                   th:text=${pageNumber}></a>
+            </li>
+        </ul>
 
 
 <!--        <div th:insert="pagination :: pagination"></div>-->

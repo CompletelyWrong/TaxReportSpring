@@ -30,8 +30,8 @@
     <div id="form" style="position: relative; width: 83%; left: 17%; ">
         <div class="col-md-8 order-md-1">
             <form name="update"  method="post" th:action="@{/inspector/update_profile}" th:object="${current_inspector}">
-                <input  name="id" th:value="${current_inspector.id}">
-                <input  name="role" th:value="${current_inspector.role}">
+                <input hidden name="id" th:value="${current_inspector.id}">
+                <input  hidden name="role" th:value="${current_inspector.role}">
                 <div class="mb-3">
                     <label th:text="#{uprofile.surname}">
                         <span class="text-muted"></span></label>
