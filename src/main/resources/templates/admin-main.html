@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head>
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link th:href="@{/css/dashboard.css}" rel="stylesheet">
+    <title>Welcome to Admin page</title>
+</head>
+<body>
+<div th:insert="service-header :: header"></div>
+
+<div th:insert="adminSidebar :: sidebar"></div>
+<div>
+    <div class="wrapper">
+        <div id="content">
+            <h2 th:text="#{admin_main}"></h2>
+            <p th:text="#{admin_main}"></p>
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>

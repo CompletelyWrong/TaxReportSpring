@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:insert="simpleHeader :: header"></div>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Floating labels example for Bootstrap</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/css/tooplate-style.css}">
+
+    <!-- Bootstrap core CSS -->
+
+    <!-- Custom styles for this template -->
+    <link th:href="@{/css/floating-labels.css}" rel="stylesheet">
+</head>
+
+<body>
+
+
+
+<!------ Include the above in your HEAD tag ---------->
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css">
+
+
+<div class="container">
+    <div class="card bg-light">
+        <article class="card-body mx-auto" style="max-width: 400px;">
+            <h4 class="card-title mt-3 text-center" th:text="#{index.reg}"></h4>
+            <p class="text-center" th:text="#{reg.all}"></p>
+            <form name = "register" method="post" th:action="@{/signUp}">
+                <div class="form-group input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"> <i class="fa fa-user"></i> </span>
+                    </div>
+                    <input name="fullName"  class="form-control" required pattern="[A-Za-zА-Яа-яїіІЇ]{2,30}" th:title="#{reg.nameHelp}" th:placeholder="#{reg.fname}" type="text">
+                </div> <!-- form-group// -->
+                <div class="form-group input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"> <i class="fa fa-user"></i> </span>
+                    </div>
+                    <input name="name1" class="form-control" required pattern="[A-Za-zА-Яа-яїіІЇ]{2,30}" th:title="#{reg.nameHelp}" th:placeholder="#{reg.name}" type="text">
+                </div> <!-- form-group// -->
+                <div class="form-group input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"> <i class="fa fa-user"></i> </span>
+                    </div>
+                    <input name="patron"  class="form-control" required pattern="[A-Za-zА-Яа-яїіІЇ]{2,30}" th:title="#{reg.nameHelp}" th:placeholder="#{reg.patron}" type="text">
+                </div> <!-- form-group// -->
+                <div class="form-group input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"> <i class="fa fa-envelope"></i> </span>
+                    </div>
+                    <input name="email" id="email" class="form-control"  required  th:placeholder="#{reg.email}" type="email">
+                </div> <!-- form-group// -->
+                <div class="form-group input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
+                    </div>
+                    <input id="password1" name="password1" class="form-control" required pattern="[\s\S]{6,15}" th:title="#{reg.passHelp}" th:placeholder="#{reg.password}" type="password">
+                </div> <!-- form-group// -->
+                <div class="form-group input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"> <i class="fa fa-lock"></i> </span>
+                    </div>
+                    <input id="password2" name="password2" class="form-control" required pattern="[\s\S]{6,15}" th:title="#{reg.passHelp}" th:placeholder="#{reg.spassword}" type="password">
+                </div> <!-- form-group// -->
+                <div class="form-group input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"> <i class="fa fa-building"></i> </span>
+                    </div>
+                    <select id="role_type" required name="role_type" class="form-control">
+                        <option disabled selected="" th:text="#{reg.type}"></option>
+                        <option id="4" value="INDIVIDUAL_TAXPAYER" th:text="#{reg.type1}"></option>
+                        <option id="3" value="LEGAL_TAXPAYER" th:text="#{reg.type2}"></option>
+                    </select>
+                </div> <!-- form-group end.// -->
+                <div class="form-group input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"> <i class="fa fa-archive"></i> </span>
+                    </div>
+                    <input id="number" name="number" class="form-control" required pattern="[\d]{8,10}" th:title="#{reg.codeHelp}" th:placeholder="#{reg.code}" type="text">
+                </div> <!-- form-group// -->
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary btn-block" th:text="#{index.reg}"></button>
+                </div> <!-- form-group// -->
+                <p class="text-center"><label th:text="#{reg.have}"></label>? <a th:text="#{log.form}" th:href="@{/login}"></a> </p>
+            </form>
+        </article>
+    </div> <!-- card.// -->
+</div>
+<!--container end.//-->
+</body>
+</html>

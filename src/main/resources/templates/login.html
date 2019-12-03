@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Marvel HTML Bootstrap 4 Template</title>
+
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/tooplate-style.css">
+    <!-- Custom styles for this template -->
+    <link href="css/floating-labels.css" rel="stylesheet">
+</head>
+<body>
+<!-- MENU -->
+<div th:insert="simpleHeader :: header"></div>
+<!-- ABOUT -->
+
+    <div class="container">
+        <form class="form-signin" name = "login" method="post" th:action="@{/signIn}">
+            <input type="hidden" name="command" value="login" />
+            <div class="text-center mb-4">
+                <img class="mb-4" src="https://getbootstrap.com/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">
+                <h1 class="h3 mb-3 font-weight-normal" th:text="#{log.form}"></h1>
+                <p th:text="#{log.enter}"></p>
+            </div>
+
+            <div class="form-label-group">
+                <input type="email" name="email" id="email" class="form-control" placeholder="Email address" required autofocus>
+                <label for="email" th:text="#{log.email}"></label>
+            </div>
+
+            <div class="form-label-group">
+                <input type="password" name="password" id="password"  class="form-control" placeholder="Password" required>
+                <label for="password" th:text="#{log.pass}"></label>
+            </div>
+            <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input" value="worker" name="worker" id="worker">
+                <label class="custom-control-label" for="worker" th:text="#{log.worker}"></label>
+            </div>
+            <p ></p>
+            <button class="btn btn-lg btn-primary btn-block" type="submit" th:text="#{log.submit}"></button>
+            <p></p>
+            <p><label th:text="#{log.haveno}"></label><a th:href="@{/login}" th:text="#{log.reg}" class="btn-link"></a></p>
+
+            <p class="mt-5 mb-3 text-muted text-center">&copy; 2019</p>
+        </form>
+
+        </div>
+
+</body>
+</html>

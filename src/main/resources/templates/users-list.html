@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="https://getbootstrap.com/docs/4.0/assets/img/favicons/favicon.ico">
+
+    <title>Dashboard Template for Bootstrap</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/dashboard/">
+
+    <!-- Bootstrap core CSS -->
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link th:href="@{/css/dashboard.css}" rel="stylesheet">
+    <style type="text/css">/* Chart.js */
+</style></head>
+
+<body>
+<div th:insert="service-header :: header"></div>
+
+<div th:insert="adminSidebar :: sidebar"></div>
+
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+
+    <h2 style="position: relative; width: 500px; left: 40%" th:text="#{admin.usersList}"></h2>
+    <div style="position: relative; width: 500px; left: 22%">
+        <div class="row col-md-6">
+            <table class="table">
+                <tr>
+                    <th th:text="#{admin.id}"></th>
+                    <th th:text="#{admin.name}"></th>
+                    <th th:text="#{inspector.surname}"></th>
+                    <th th:text="#{inspector.pat}"></th>
+                    <th th:text="#{inspector.inn}"></th>
+                    <th th:text="#{log.email}"></th>
+                    <th th:text="#{admin.role}"></th>
+                </tr>
+                    <tr th:each="user : ${users.content}">
+                        <td th:text="${user.id}"></td>
+                        <td th:text="${user.name}"></td>
+                        <td th:text="${user.surname}"></td>
+                        <td th:text="${user.patronymic}"></td>
+                        <td th:text="${user.identificationCode}"></td>
+                        <td th:text="${user.email}"></td>
+                        <td th:text="${user.role}"></td>
+                    </tr>
+            </table>
+        </div>
+
+        <ul class="pagination"><li th:class="page-item" th:if="${users.getTotalPages() > 1}" class="pagination"
+                                   th:each="pageNumber : ${#numbers.sequence(1, users.getTotalPages())}"
+                                   th:classappend="${pageNumber==users.number + 1} ? 'active'">
+            <a th:class="page-link" th:href="@{requests(page=${pageNumber}-1)}"
+               th:text=${pageNumber}></a>
+        </li></ul>
+        <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"></script>
+    </div>
+</main>
+</body></html>

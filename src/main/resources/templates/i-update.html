@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="icon" href="https://getbootstrap.com/docs/4.0/assets/img/favicons/favicon.ico">
+
+<title>Dashboard Template for Bootstrap</title>
+
+<link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/dashboard/">
+
+<!-- Bootstrap core CSS -->
+<link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+
+<!-- Custom styles for this template -->
+<link th:href="@{/css/dashboard.css}" rel="stylesheet">
+<style type="text/css">/* Chart.js */
+</style>
+
+<body>
+<div th:insert="service-header :: header"></div>
+
+<div th:insert="inspectorSidebar :: sidebar"></div>
+
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+    <h4 style="position: relative; width: 30%; left: 45%" class="mb-3" th:text="#{uprofile.prof}">
+    </h4>
+    <div id="form" style="position: relative; width: 83%; left: 17%; ">
+        <div class="col-md-8 order-md-1">
+            <form name="update"  method="post" th:action="@{/inspector/update_profile}" th:object="${current_inspector}">
+                <input  name="id" th:value="${current_inspector.id}">
+                <input  name="role" th:value="${current_inspector.role}">
+                <div class="mb-3">
+                    <label th:text="#{uprofile.surname}">
+                        <span class="text-muted"></span></label>
+                    <input th:field="*{surname}" name="fullName" class="form-control" required
+                           pattern="[A-Za-zА-Яа-яїіІЇ]{2,30}" th:title="#{reg.nameHelp}" th:placeholder="#{reg.fname}"
+                           type="text" th:value="update.surname">
+                </div>
+
+                <div class="mb-3">
+                    <label  th:text="#{uprofile.name}">
+                        <span class="text-muted"></span></label>
+                    <input th:field="*{name}" name="name1" class="form-control" required
+                           pattern="[A-Za-zА-Яа-яїіІЇ]{2,30}" th:title="#{reg.nameHelp}" th:placeholder="#{reg.name}"
+                           type="text">
+                </div>
+
+                <div class="mb-3">
+                    <label  th:text="#{uprofile.patron}">
+                        <span class="text-muted"></span></label>
+                    <input th:field="*{patronymic}" name="patron" class="form-control" required
+                           pattern="[A-Za-zА-Яа-яїіІЇ]{2,30}" th:title="#{reg.nameHelp}"
+                           th:placeholder="#{reg.patron}" type="text">
+                </div>
+
+                <div class="mb-3">
+                    <label for="email" th:text="#{uprofile.email}">
+                        <span class="text-muted"></span></label>
+                    <input th:field="*{email}" name="email" id="email" class="form-control" required
+                           th:placeholder="#{reg.email}" type="email">
+                </div>
+                <div class="mb-3">
+                    <label  th:text="#{uprofile.updatePass1}">
+                        <span class="text-muted"></span></label>
+                    <input th:field="*{password}" id="password1" name="password1" class="form-control"
+                           required pattern="[\s\S]{6,15}" th:title="#{reg.passHelp}"
+                           th:placeholder="#{reg.password}" type="password">
+                </div>
+                <div class="mb-3">
+                    <label for="password2" th:text="#{uprofile.updatePass2}">
+                        <span class="text-muted"></span></label>
+                    <input id="password2" name="password2" class="form-control" required
+                           pattern="[\s\S]{6,15}" th:title="#{reg.passHelp}"
+                           th:placeholder="#{reg.spassword}" type="password">
+                </div>
+                <button class="btn btn-primary btn-lg btn-block" style="width: 35%; position: relative; left: 35%;"
+                        type="submit" th:text="#{uprofile.change}">
+                </button>
+            </form>
+        </div>
+    </div>
+</main>
+</body>
+</html>
