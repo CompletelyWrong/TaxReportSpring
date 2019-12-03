@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="icon" href="https://getbootstrap.com/docs/4.0/assets/img/favicons/favicon.ico">
+
+<title>Dashboard Template for Bootstrap</title>
+
+<link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/dashboard/">
+
+<!-- Bootstrap core CSS -->
+<link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+
+<!-- Custom styles for this template -->
+<link th:href="@{/css/dashboard.css}" rel="stylesheet">
+<style type="text/css">/* Chart.js */
+</style>
+</head>
+
+<body>
+<div th:insert="service-header :: header"></div>
+
+<div th:insert="userSidebar :: sidebar"></div>
+
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+    <div class="chartjs-size-monitor"
+         style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;">
+        <div class="chartjs-size-monitor-expand"
+             style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+            <div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div>
+        </div>
+        <div class="chartjs-size-monitor-shrink"
+             style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+            <div style="position:absolute;width:200%;height:200%;left:0; top:0"></div>
+        </div>
+    </div>
+
+    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+        <h4 style="position: relative; width: 30%; left: 30%" class="mb-3" th:text="#{uprofile.prof}">
+        </h4>
+        <div id="form" style="position: relative; width: 83%; left: 12%; ">
+            <div class="col-md-8 order-md-1">
+                <form method="post" th:action="@{/user/confirm_profile}" th:object="${currentUser}"
+                      class="needs-validation">
+                    <input name="role" hidden type="text" th:value="${session.user.role}">
+                    <input name="id" hidden type="text" th:value="${session.user.id}">
+                    <div class="mb-3">
+                        <label for="surname" th:text="#{uprofile.surname}">
+                            <span class="text-muted"></span></label>
+                        <input required="required" name="surname" th:title="#{reg.nameHelp}" id="surname"
+                               class="form-control"
+                               pattern="[A-Za-zА-Яа-яїіІЇ]{2,30}"
+                               th:placeholder="#{reg.fname}" type="text" th:value="${session.user.surname}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="name1" th:text="#{uprofile.name}">
+                            <span class="text-muted"></span></label>
+                        <input name="name" class="form-control" th:title="#{reg.nameHelp}" required
+                               pattern="[A-Za-zА-Яа-яїіІЇ]{2,30}"
+                               th:placeholder="#{reg.name}" type="text" id="name1" th:value="${session.user.name}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label th:text="#{uprofile.patron}">
+                            <span class="text-muted"></span></label>
+                        <input name="patronymic" class="form-control" th:title="#{reg.nameHelp}" required
+                               pattern="[A-Za-zА-Яа-яїіІЇ]{2,30}"
+                               th:placeholder="#{reg.patron}" th:value="${session.user.patronymic}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="email" th:text="#{uprofile.email}">
+                            <span class="text-muted"></span></label>
+                        <input name="email" id="email" class="form-control" required th:placeholder="#{reg.email}"
+                               type="email" th:value="${session.user.email}">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="identificationCode" th:text="#{uprofile.code}">
+                            <span class="text-muted"></span></label>
+                        <input id="identificationCode" name="identificationCode" class="form-control" required
+                               pattern="[\d]{8,10}" th:title="#{reg.codeHelp}" th:placeholder="#{reg.code}" type="text"
+                               th:value="${session.user.identificationCode}">
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" th:text="#{uprofile.updatePass1}">
+                            <span class="text-muted"></span></label>
+                        <input id="password" name="password" class="form-control" required="required"
+                               pattern="[\s\S]{6,15}" th:title="#{reg.passHelp}" th:placeholder="#{reg.spassword}"
+                               type="password">
+                    </div>
+                    <div class="mb-3">
+                        <label for="password2" th:text="#{uprofile.updatePass2}">
+                            <span class="text-muted"></span></label>
+                        <input id="password2" name="password2" class="form-control" required="required"
+                               pattern="[\s\S]{6,15}" th:title="#{reg.passHelp}" th:placeholder="#{reg.spassword}"
+                               type="password">
+                    </div>
+                    <button class="btn btn-primary btn-lg btn-block" style="width: 35%; position: relative; left: 35%;"
+                            type="submit" th:text="#{uprofile.change}">
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+</main>
+</body>
+</html>

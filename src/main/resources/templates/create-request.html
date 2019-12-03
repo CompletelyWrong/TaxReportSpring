@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="icon" href="https://getbootstrap.com/docs/4.0/assets/img/favicons/favicon.ico">
+
+<title>Dashboard Template for Bootstrap</title>
+
+<link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/dashboard/">
+
+<!-- Bootstrap core CSS -->
+<link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+
+<!-- Custom styles for this template -->
+<link th:href="@{/css/dashboard.css}" rel="stylesheet">
+<style type="text/css">/* Chart.js */
+</style>
+</head>
+
+<body>
+<div th:insert="service-header :: header"></div>
+
+<div th:insert="userSidebar :: sidebar"></div>
+
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+    <h4 style="position: relative; width: 500px; left: 30%" class="mb-3" th:text="#{request.main}"></h4>
+
+    <div id="form1" style="position: relative; width: 83%; left: 17%; ">
+
+        <div id="form" style="position: relative; left: 17%; width: 1000px ">
+            <div class="col-md-8 order-md-1">
+                <form method="post" th:action="@{/user/confirm_request}" th:object="${request}"
+                      class="needs-validation">
+                    <div class="row">
+                        <div class="col-md-5 mb-3">
+                            <label for="country" th:text="#{request.type}"></label>
+                            <select class="custom-select d-block w-100" id="country" required="">
+                                <option disabled selected value="" th:text="#{request.stype}"></option>
+                                <option th:text="#{request.change}"></option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="reason" th:text="#{request.mess}"><span class="text-muted"></span></label>
+                        <input required type="text" name="reason" class="form-control" id="reason"
+                               th:placeholder="#{request.messbody}">
+                    </div>
+                    <button class="btn btn-primary btn-lg btn-block" style="width: 30%; position: relative; left: 40%;"
+                            type="submit" th:text="#{request.submit}"></button>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

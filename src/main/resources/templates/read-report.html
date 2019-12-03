@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="https://getbootstrap.com/docs/4.0/assets/img/favicons/favicon.ico">
+
+    <title>Dashboard Template for Bootstrap</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/dashboard/">
+
+    <!-- Bootstrap core CSS -->
+    <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link th:href="@{/css/dashboard.css}" rel="stylesheet">
+    <style type="text/css">/* Chart.js */
+</style>
+
+<body>
+<div th:insert="service-header :: header"></div>
+
+<div th:insert="inspectorSidebar :: sidebar"></div>
+
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+
+    <h4 style="position: relative; width: 500px; left: 40%" class="mb-3" th:text="#{inspector.work}"></h4>
+    <div id="form" style="position: relative; width: 83%; left: 17%; ">
+        <div  class="col-md-8 order-md-1" >
+            <h4 style="position: relative; width: 500px; left: 40%" th:text="#{inspector.current}"></h4>
+            <form class="rounded"  style="padding: 10px; border:1px solid #999ea0">
+                <div class="mb-3">
+                    <label for="pib" th:text="#{report.pib}"></label>
+                    <input th:value="${report.fullName}" disabled type="text" class="form-control" id="pib" name="pib" required="">
+                </div>
+                <div class="mb-3">
+                    <label for="type" th:text="#{report.type}"></label>
+                    <input th:value="${report.type}" disabled type="text" class="form-control" id="type" name="type"  required="">
+                </div>
+                <div class="mb-3">
+                    <label for="code" th:text="#{reg.code}"></label>
+                    <input th:value="${report.innCode}" disabled style="width: 48%;" type="text" class="form-control" id="code"  name="code" required="">
+                </div>
+                <p style="position: relative;" th:text="#{report.period}"></p>
+                <div class="row" style="position: relative">
+                    <div class="col-md-6 mb-3">
+                        <label for="date1" th:text="#{report.periodStart}"></label>
+                        <input th:value="${report.periodStart}" disabled style="width: 100%;" name="date" required id="date1" type="date" class="form-control">
+
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label for="date2" th:text="#{report.periodEnd}"></label>
+                        <input th:value="${report.periodEnd}" disabled style="width: 100%;" name="date" required id="date2" type="date" class="form-control">
+                    </div>
+                </div>
+                <p style="position: relative;" th:text="#{report.income}"></p>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div class="form-label-group">
+                            <input th:value="${report.clearCode}" disabled style="width: 100%;" type="text" name="incomeCode" id="incomeCode" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <input th:value="${report.clearValue}" disabled style="width: 100%;" type="text" name="incomeValue" id="incomeValue" class="form-control" />
+                    </div>
+                </div>
+                <p style="position: relative;" th:text="#{report.outcome}"></p>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <input th:value="${report.incomeCode}" disabled style="width: 100%;"  type="text" name="outcomeCode" id="outcomeCode" class="form-control" />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <input th:value="${report.incomeValue}" disabled style="width: 100%;"  type="text" name="outcomeValue" id="outcomeValue" class="form-control" />
+                    </div>
+                </div>
+                <p style="position: relative;" th:text="#{report.procent}"></p>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <input th:value="${report.outcomeCode}" disabled style="width: 100%;"  type="text" name="procentCode" id="procentCode" class="form-control" />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <input th:value="${report.outcomeValue}" disabled style="width: 100%;"  type="text" name="procentValue" id="procentValue" class="form-control" />
+                    </div>
+                </div>
+                <p style="position: relative;" th:text="#{request.clear}"></p>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <input th:value="${report.percentCode}" disabled style="width: 100%;"  type="text" name="clearCode" id="clearCode" class="form-control" />
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <input th:value="${report.percentValue}" disabled style="width: 100%;"  type="text" name="clearValue" id="clearValue" class="form-control" />
+                    </div>
+                </div>
+            </form>
+        </div>
+        <p></p>
+        <p></p>
+        <p></p>
+        <p></p>
+        <p></p>
+
+        <form th:object="${action}" name="register" method="post" th:action="@{/inspector/confirm_report/{id}(id = ${report_id})}" class="needs-validation">
+            <h5 style="position: relative; width: 500px; left: 40%" th:text="#{user.usersReport}"></h5>
+            <div class="form-group">
+                <select th:field="*{action}" name="action" class="custom-select d-block w-100" required="">
+                    <option disabled selected value="" th:text="#{report.chose}"></option>
+                    <option value="ACCEPT" th:text="#{report.acc}"></option>
+                    <option value="REJECT" th:text="#{report.rej}"></option>
+                    <option value="REQUEST_CHANGES" th:text="#{report.cna}"></option>
+                    <option value="VIEW" th:text="#{report.view}"></option>
+                </select>
+            </div>
+            <h5 style="position: relative; width: 500px; left: 20%" th:text="#{report.add}"></h5>
+            <div class="form-group">
+                <label for="message"></label>
+                <textarea th:field="*{message}" name="message" required th:placeholder="#{report.add}" class="form-control" id="message" rows="3"></textarea>
+            </div>
+            <button class="btn btn-primary btn-lg btn-block" style="width: 30%; position: relative; left: 38% " type="submit" th:text="#{request.submit}"></button>
+        </form>
+    </div>
+</main>
+</body></html>

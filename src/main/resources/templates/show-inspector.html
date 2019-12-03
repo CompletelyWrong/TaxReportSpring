@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="icon" href="https://getbootstrap.com/docs/4.0/assets/img/favicons/favicon.ico">
+
+<title>Dashboard Template for Bootstrap</title>
+
+<link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/dashboard/">
+
+<!-- Bootstrap core CSS -->
+<link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+
+<!-- Custom styles for this template -->
+<link th:href="@{/css/dashboard.css}" rel="stylesheet">
+<style type="text/css">/* Chart.js */
+</style>
+
+<body>
+<div th:insert="service-header :: header"></div>
+
+<div th:insert="userSidebar :: sidebar"></div>
+
+
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+    <h4 style="position: relative; width: 500px; left: 40%" class="mb-3" th:text="#{user.inspectorMain}"></h4>
+    <div style="position: relative; width: 60%; left: 20%" class="col-md-8 order-md-1">
+        <form class="needs-validation" novalidate="">
+            <div class="mb-3">
+                <label for="fname" th:text="#{uprofile.surname}"><span class="text-muted"></span></label>
+                <input disabled type="email" class="form-control" id="fname" th:value="${inspector.surname}">
+                <div class="invalid-feedback">
+
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="name" th:text="#{uprofile.name}"><span class="text-muted"></span></label>
+                <input disabled type="email" class="form-control" id="name" th:value="${inspector.name}">
+                <div class="invalid-feedback">
+
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="pat" th:text="#{uprofile.patron}"><span class="text-muted"></span></label>
+                <input disabled type="email" class="form-control" id="pat" th:value="${inspector.patronymic}">
+                <div class="invalid-feedback">
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="email" th:text="#{uprofile.email}"><span class="text-muted"></span></label>
+                <input disabled type="email" class="form-control" id="email" th:value="${inspector.email}">
+                <div class="invalid-feedback">
+                </div>
+            </div>
+        </form>
+    </div>
+</main>
+</body>
+</html>
