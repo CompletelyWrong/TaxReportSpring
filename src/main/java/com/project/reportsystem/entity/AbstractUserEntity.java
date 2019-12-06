@@ -7,28 +7,29 @@ import lombok.experimental.SuperBuilder;
 import javax.persistence.*;
 
 @Data
-@NoArgsConstructor(force = true)
+@NoArgsConstructor
 @SuperBuilder
 @MappedSuperclass
 public abstract class AbstractUserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private final Long id;
+    private Long id;
 
     @Column(name = "email", length = 50, nullable = false)
-    private final String email;
+    private String email;
 
     @Column(name = "name", length = 50, nullable = false)
-    private final String name;
+    private String name;
 
     @Column(name = "surname", length = 50, nullable = false)
-    private final String surname;
+    private String surname;
 
     @Column(name = "patronymic", length = 50, nullable = false)
-    private final String patronymic;
+    private String patronymic;
 
     @Column(name = "password", length = 70, nullable = false)
-    private final String password;
+    private String password;
+
     @Enumerated(EnumType.STRING)
-    private final Role role;
+    private Role role;
 }

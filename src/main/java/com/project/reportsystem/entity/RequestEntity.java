@@ -1,6 +1,9 @@
 package com.project.reportsystem.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
@@ -8,17 +11,17 @@ import javax.persistence.*;
 @Builder
 @Entity
 @Table(name = "request")
-@NoArgsConstructor(force = true)
+@NoArgsConstructor
 @AllArgsConstructor
 public class RequestEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private final Long id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private final UserEntity entityUser;
+    private UserEntity entityUser;
 
     @Column(name = "message", length = 500, nullable = false)
-    private final String reason;
+    private String reason;
 }

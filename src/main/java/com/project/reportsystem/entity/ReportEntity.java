@@ -1,6 +1,9 @@
 package com.project.reportsystem.entity;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -10,25 +13,25 @@ import java.util.List;
 @Builder
 @Table(name = "reports")
 @Entity
-@NoArgsConstructor(force = true)
+@NoArgsConstructor
 @AllArgsConstructor
 public class ReportEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private final Long id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private final UserEntity entityUser;
+    private UserEntity entityUser;
 
     @Column(name = "file_link", length = 500, nullable = false)
-    private final String fileLink;
+    private String fileLink;
 
     @Column(name = "date", nullable = false, columnDefinition = "TIMESTAMP")
-    private final LocalDateTime creationDate;
+    private LocalDateTime creationDate;
 
     @Enumerated(EnumType.STRING)
-    private final ReportStatus status;
+    private ReportStatus status;
 
     @OneToMany(mappedBy = "reportEntity", cascade = CascadeType.ALL)
     private List<ActionEntity> actions;
