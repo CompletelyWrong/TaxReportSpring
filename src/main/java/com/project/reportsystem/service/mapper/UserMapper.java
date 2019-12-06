@@ -20,6 +20,7 @@ public class UserMapper {
                 .password(user.getPassword())
                 .patronymic(user.getPatronymic())
                 .surname(user.getSurname())
+                .inspector(InspectorEntity.builder().id(user.getInspector().getId()).build())
                 .build();
     }
 
@@ -33,6 +34,7 @@ public class UserMapper {
                 .password(entityUser.getPassword())
                 .patronymic(entityUser.getPatronymic())
                 .surname(entityUser.getSurname())
+                .inspector(Inspector.builder().id(entityUser.getInspector().getId()).build())
                 .build();
     }
 

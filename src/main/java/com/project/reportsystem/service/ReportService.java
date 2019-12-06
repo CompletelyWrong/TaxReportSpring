@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 public interface ReportService {
     Report addReportToUser(Report report, User user);
 
-    Report findById(Long id);
+    Report findById(Long reportId);
 
     Report updateReport(Report report);
 

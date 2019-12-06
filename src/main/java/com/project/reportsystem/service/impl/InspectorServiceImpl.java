@@ -5,6 +5,7 @@ import com.project.reportsystem.entity.InspectorEntity;
 import com.project.reportsystem.entity.Role;
 import com.project.reportsystem.exception.AlreadyExistUserException;
 import com.project.reportsystem.exception.EntityNotFoundException;
+import com.project.reportsystem.exception.InspectorNotFoundException;
 import com.project.reportsystem.repository.InspectorRepository;
 import com.project.reportsystem.service.InspectorService;
 import com.project.reportsystem.service.mapper.InspectorMapper;
@@ -41,11 +42,17 @@ public class InspectorServiceImpl implements InspectorService {
         String encoded = encoder.encode(inspector.getPassword());
         inspector.setPassword(encoded);
         inspectorRepository.save(mapper.mapInspectorToInspectorEntity(inspector));
+
         return inspector;
     }
 
     @Override
     public Inspector login(String email, String password) {
+        if (Objects.isNull(email) || Objects.isNull(password)) {
+            log.warn("Email / password id is null");
+            throw new IllegalArgumentException("Email / password id is null");
+        }
+
         InspectorEntity entity = inspectorRepository.findByEmail(email).orElseThrow(() -> {
             log.warn("There is no inspector with this such email");
             return new EntityNotFoundException("There is no inspector with this such email");
@@ -74,7 +81,23 @@ public class InspectorServiceImpl implements InspectorService {
         String encoded = encoder.encode(inspector.getPassword());
         inspector.setPassword(encoded);
         inspectorRepository.save(mapper.mapInspectorToInspectorEntity(inspector));
+
         return inspector;
+    }
+
+    @Override
+    public Inspector findByUserId(Long userId) {
+        if (Objects.isNull(userId)) {
+            log.warn("Inspector is null");
+            throw new IllegalArgumentException("Inspector is null");
+        }
+
+        return inspectorRepository.findByUserId(userId)
+                .map(mapper::mapInspectorEntityToInspector)
+                .orElseThrow(() -> {
+                    log.warn("There is no inspector by this user id");
+                    return new EntityNotFoundException("There is no inspector by this user id");
+                });
     }
 
     @Override
@@ -94,7 +117,7 @@ public class InspectorServiceImpl implements InspectorService {
                 .map(mapper::mapInspectorEntityToInspector)
                 .orElseThrow(() -> {
                     log.warn("There is no available inspectors in system");
-                    return new EntityNotFoundException("There is no available inspectors in system");
+                    return new InspectorNotFoundException("There is no available inspectors in system");
                 });
     }
 
@@ -109,7 +132,7 @@ public class InspectorServiceImpl implements InspectorService {
                 .map(mapper::mapInspectorEntityToInspector)
                 .orElseThrow(() -> {
                     log.warn("There is no available inspectors in system");
-                    return new EntityNotFoundException("There is no available inspectors in system");
+                    return new InspectorNotFoundException("There is no available inspectors in system");
                 });
     }
 }

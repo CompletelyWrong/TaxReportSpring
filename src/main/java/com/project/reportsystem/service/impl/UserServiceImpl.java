@@ -5,7 +5,6 @@ import com.project.reportsystem.domain.User;
 import com.project.reportsystem.entity.UserEntity;
 import com.project.reportsystem.exception.AlreadyExistUserException;
 import com.project.reportsystem.exception.EntityNotFoundException;
-import com.project.reportsystem.exception.InvalidRegistrationException;
 import com.project.reportsystem.repository.UserRepository;
 import com.project.reportsystem.service.InspectorService;
 import com.project.reportsystem.service.UserService;
@@ -33,24 +32,27 @@ public class UserServiceImpl implements UserService {
     public User register(User user) {
         if (Objects.isNull(user)) {
             log.warn("User is null");
-            throw new InvalidRegistrationException("User is null");
+            throw new IllegalArgumentException("User is null");
         }
+
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
             log.warn("User is already registered by this e-mail");
             throw new AlreadyExistUserException("User is already registered by this e-mail");
         }
+
         String encoded = encoder.encode(user.getPassword());
         user.setPassword(encoded);
         Inspector inspector = inspectorService.findWithLessUsers();
         userRepository.save(mapper.mapUserToUserEntityWithInspector(user, inspector));
+
         return user;
     }
 
     @Override
     public User findById(Long userId) {
         if (Objects.isNull(userId)) {
-            log.warn("User is not valid");
-            throw new InvalidRegistrationException("User is not valid");
+            log.warn("User id is null");
+            throw new IllegalArgumentException("User id is null");
         }
 
         return userRepository.findById(userId)
@@ -63,6 +65,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User login(String email, String password) {
+        if (Objects.isNull(email) || Objects.isNull(password)) {
+            log.warn("Email / password id is null");
+            throw new IllegalArgumentException("Email / password id is null");
+        }
+
         UserEntity entity = userRepository.findByEmail(email).orElseThrow(() -> {
             log.warn("There is no user with this email");
             return new EntityNotFoundException("There is no user with this email");
@@ -114,7 +121,8 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("Pageable/Inspector id is null");
         }
 
-        return userRepository.findAllByInspectorId(inspectorId, pageable).map(mapper::mapUserEntityToUser);
+        return userRepository.findAllByInspectorId(inspectorId, pageable)
+                .map(mapper::mapUserEntityToUser);
     }
 
     private UserEntity validate(User user) {

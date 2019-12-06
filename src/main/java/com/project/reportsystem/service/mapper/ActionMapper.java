@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 public class ActionMapper {
     public ActionEntity mapActionToActionEntity(Action action, Report report) {
         return ActionEntity.builder()
-                .action(action.getAction())
+                .action(action.getActionType())
                 .dateTime(action.getDateTime())
                 .id(action.getId())
                 .inspectorEntity(InspectorEntity.builder()
@@ -27,16 +27,13 @@ public class ActionMapper {
 
     public Action mapActionEntityToAction(ActionEntity entity) {
         return Action.builder()
-                .action(entity.getAction())
+                .actionType(entity.getAction())
                 .dateTime(entity.getDateTime())
                 .id(entity.getId())
                 .inspector(Inspector.builder()
                         .id(entity.getInspectorEntity().getId())
                         .build())
                 .message(entity.getMessage())
-                .report(Report.builder()
-                        .id(entity.getReportEntity().getId())
-                        .build())
                 .build();
     }
 }
