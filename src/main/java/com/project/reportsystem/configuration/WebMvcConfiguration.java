@@ -14,7 +14,6 @@ import java.util.Locale;
 @Configuration
 public class WebMvcConfiguration implements WebMvcConfigurer {
 
-
     @Bean
     public LocaleResolver localeResolver() {
         final SessionLocaleResolver sessionLocaleResolver = new SessionLocaleResolver();
@@ -33,5 +32,4 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
 }
