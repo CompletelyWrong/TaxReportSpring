@@ -1,23 +1,26 @@
 package com.project.reportsystem.domain;
 
 import com.project.reportsystem.entity.ReportStatus;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Data
 @Builder
-@NoArgsConstructor(force = true)
+@NoArgsConstructor
 @AllArgsConstructor
 public class Report {
-    @Setter(AccessLevel.PUBLIC)
+
     private Long id;
-    @Setter(AccessLevel.PUBLIC)
+
     private User user;
-    @Setter(AccessLevel.PUBLIC)
+
     private String fileLink;
-    @Setter(AccessLevel.PUBLIC)
+
     private LocalDateTime creationDate;
-    @Setter(AccessLevel.PUBLIC)
+
     private ReportStatus status;
 }

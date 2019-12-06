@@ -1,15 +1,21 @@
 package com.project.reportsystem.domain;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.NotEmpty;
 
 @Data
 @Builder
-@NoArgsConstructor(force = true)
+@NoArgsConstructor
 @AllArgsConstructor
 public class Request {
     private Long id;
-    @Setter(AccessLevel.PUBLIC)
+
     private User user;
-    @Setter(AccessLevel.PUBLIC)
+
+    @NotEmpty(message = "Please provide reason")
     private String reason;
 }

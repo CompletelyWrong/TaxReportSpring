@@ -18,11 +18,9 @@ public class Action {
 
     private Inspector inspector;
 
-    private Report report;
-
     private LocalDateTime dateTime;
 
     private String message;
 
-    private ActionType action;
+    private ActionType actionType;
 }

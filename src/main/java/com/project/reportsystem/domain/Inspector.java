@@ -11,7 +11,7 @@ import javax.validation.constraints.Pattern;
 
 @Data
 @Builder
-@NoArgsConstructor(force = true)
+@NoArgsConstructor
 @AllArgsConstructor
 public class Inspector {
     private Long id;
@@ -32,7 +32,7 @@ public class Inspector {
     @Pattern(regexp = "[A-Za-zА-Яа-яїіІЇ]{2,30}", message = "Surname should be at least 2 characters long and should not contain numbers")
     private String surname;
 
-    @NotEmpty(message = "Please provide name")
+    @NotEmpty(message = "Please provide patronymic")
     @Pattern(regexp = "[A-Za-zА-Яа-яїіІЇ]{2,30}", message = "Patronymic should be at least 2 characters long and should not contain numbers")
     private String patronymic;
 

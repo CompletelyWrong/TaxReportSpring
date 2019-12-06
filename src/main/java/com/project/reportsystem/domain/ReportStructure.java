@@ -1,42 +1,58 @@
 package com.project.reportsystem.domain;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotEmpty;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @Builder
 @Data
-@NoArgsConstructor(force = true)
+@NoArgsConstructor
 @AllArgsConstructor
 @XmlRootElement(name = "root")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class ReportStructure {
-    @Setter(AccessLevel.PUBLIC)
+    @NotEmpty(message = "Please provide fullName")
     private String fullName;
-    @Setter(AccessLevel.PUBLIC)
+
+    @NotEmpty(message = "Please provide type")
     private String type;
-    @Setter(AccessLevel.PUBLIC)
+
+    @NotEmpty(message = "Please provide innCode")
     private String innCode;
-    @Setter(AccessLevel.PUBLIC)
+
+    @NotEmpty(message = "Please provide periodStart")
     private String periodStart;
-    @Setter(AccessLevel.PUBLIC)
+
+    @NotEmpty(message = "Please provide periodEnd")
     private String periodEnd;
-    @Setter(AccessLevel.PUBLIC)
+
+    @NotEmpty(message = "Please provide incomeCode")
     private String incomeCode;
-    @Setter(AccessLevel.PUBLIC)
+
+    @NotEmpty(message = "Please provide incomeValue")
     private String incomeValue;
-    @Setter(AccessLevel.PUBLIC)
+
+    @NotEmpty(message = "Please provide outcomeCode")
     private String outcomeCode;
-    @Setter(AccessLevel.PUBLIC)
+
+    @NotEmpty(message = "Please provide outcomeValue")
     private String outcomeValue;
-    @Setter(AccessLevel.PUBLIC)
+
+    @NotEmpty(message = "Please provide percentCode")
     private String percentCode;
-    @Setter(AccessLevel.PUBLIC)
+
+    @NotEmpty(message = "Please provide percentValue")
     private String percentValue;
-    @Setter(AccessLevel.PUBLIC)
+
+    @NotEmpty(message = "Please provide clearCode")
     private String clearCode;
-    @Setter(AccessLevel.PUBLIC)
+
+    @NotEmpty(message = "Please provide clearValue")
     private String clearValue;
 }
