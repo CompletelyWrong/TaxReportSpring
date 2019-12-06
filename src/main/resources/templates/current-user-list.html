@@ -4,9 +4,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="https://getbootstrap.com/docs/4.0/assets/img/favicons/favicon.ico">
+    <link th:rel="icon" th:href="@{/images/favicon.ico}">
+    <link rel="icon" type="image/png" sizes="32x32" th:href="@{/images/favicon-32x32.png}">
+    <link rel="icon" type="image/png" sizes="16x16" th:href="@{/images/favicon-16x16.png}">
 
-    <title>Dashboard Template for Bootstrap</title>
+    <title th:text="#{user.urUser}"></title>
 
     <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/dashboard/">
 
@@ -26,7 +28,7 @@
 <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
 
     <h4 style="position: relative; width: 500px; left: 40%" class="mb-3" th:text="#{user.urUser}"></h4>
-    <div style="position: relative; width: 100%;">
+    <div style="position: relative; width: 100%; left: 25%" th:if="${not #lists.isEmpty(users.getContent())}">
         <div class="row col-md-6">
             <table class="table table-striped table-bordered table-sm">
                 <tr>
@@ -45,7 +47,7 @@
                         <td th:text="${user.patronymic}"></td>
                         <td th:text="${user.identificationCode}"></td>
                         <td th:text="${user.email}"></td>
-                        <td><a class="page-link" th:text="#{inspector.userId}" th:href="@{/inspector/user_reports/{id}(id = ${user.id})}"></a></td>
+                        <td><a class="page-link" th:text="#{inspector.userId}" th:href="@{/inspector/user-reports/{id}(id = ${user.id})}"></a></td>
                     </tr>
             </table>
         </div>
@@ -53,13 +55,14 @@
         <ul class="pagination"><li th:class="page-item" th:if="${users.getTotalPages() > 1}" class="pagination"
                                    th:each="pageNumber : ${#numbers.sequence(1, users.getTotalPages())}"
                                    th:classappend="${pageNumber==users.number + 1} ? 'active'">
-            <a th:class="page-link" th:href="@{requests(page=${pageNumber}-1)}"
+            <a th:class="page-link" th:href="@{users?(page=${pageNumber}-1)}"
                th:text=${pageNumber}></a>
         </li></ul>
         <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"></script>
     </div>
+    <div th:if="${#lists.isEmpty(users.getContent())}"><h3 style="position: relative; width: 500px; left: 40%" th:text="#{report.empty}"></h3></div>
 </main>
 
 </body></html>

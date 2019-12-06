@@ -4,9 +4,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="description" content="">
 <meta name="author" content="">
-<link rel="icon" href="https://getbootstrap.com/docs/4.0/assets/img/favicons/favicon.ico">
+<link th:rel="icon" th:href="@{/images/favicon.ico}">
+<link rel="icon" type="image/png" sizes="32x32" th:href="@{/images/favicon-32x32.png}">
+<link rel="icon" type="image/png" sizes="16x16" th:href="@{/images/favicon-16x16.png}">
 
-<title>Dashboard Template for Bootstrap</title>
+<title th:text="#{admin.addInspectorMain}"></title>
 
 <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/dashboard/">
 
@@ -27,58 +29,57 @@
 <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
     <h2 style="position: relative; left: 35%; width: 60%" th:text="#{admin.addInspectorMain}"></h2>
     <article class="card-body mx-auto" style="max-width: 400px;">
-        <form th:object="${inspector}" name="register" method="post" th:action="@{/admin/confirm_create}">
+        <form th:object="${inspector}" name="register" method="post" th:action="@{/admin/confirm-create}">
+            <div>
+                <label class="text-danger" th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}"></label>
+            </div>
             <div class="form-group input-group">
-                <div class="form-group input-group">
-                    <label class="text-danger" th:if="${#fields.hasErrors('surname')}" th:errors="*{surname}"></label>
-                    <input th:field="*{surname}" name="fullName" class="form-control" required
-                           pattern="[A-Za-zА-Яа-яїіІЇ]{2,30}" th:title="#{reg.nameHelp}" th:placeholder="#{reg.fname}"
-                           type="text">
-                </div>
+                <input th:field="*{surname}" name="fullName" class="form-control" required
+                       pattern="[A-Za-zА-Яа-яїіІЇ]{2,30}" th:title="#{reg.nameHelp}" th:placeholder="#{reg.fname}"
+                       type="text">
+            </div>
+            <div>
+                <label class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></label>
+            </div><!-- form-group// -->
+            <div class="form-group input-group">
+                <input th:field="*{name}" name="name1" class="form-control" required
+                       pattern="[A-Za-zА-Яа-яїіІЇ]{2,30}" th:title="#{reg.nameHelp}" th:placeholder="#{reg.name}"
+                       type="text">
             </div> <!-- form-group// -->
-            <div class="form-group input-group">
-                <div class="form-group input-group">
-                    <label class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></label>
-                    <input th:field="*{name}" name="name1" class="form-control" required
-                           pattern="[A-Za-zА-Яа-яїіІЇ]{2,30}" th:title="#{reg.nameHelp}" th:placeholder="#{reg.name}"
-                           type="text">
-                </div>
-            </div> <!-- form-group// -->
-            <div class="form-group input-group">
-                <div class="form-group input-group">
-                    <p><label class="text-danger" th:if="${#fields.hasErrors('patronymic')}"
-                              th:errors="*{patronymic}"></label></p>
-                    <input th:field="*{patronymic}" name="patron" class="form-control" required
-                           pattern="[A-Za-zА-Яа-яїіІЇ]{2,30}" th:title="#{reg.nameHelp}"
-                           th:placeholder="#{reg.patron}" type="text">
-                </div> <!-- form-group// -->
+            <div>
+                <label class="text-danger" th:if="${#fields.hasErrors('patronymic')}"
+                       th:errors="*{patronymic}"></label>
             </div>
             <div class="form-group input-group">
-                <div class="form-group input-group">
-                    <label class="text-danger" th:if="${#fields.hasErrors('email')}"
-                           th:errors="*{email}"></label>
-                    <input th:field="*{email}" name="email" id="email" class="form-control" required
-                           th:placeholder="#{reg.email}" type="email">
-                </div> <!-- form-group// -->
+                <input th:field="*{patronymic}" name="patron" class="form-control" required
+                       pattern="[A-Za-zА-Яа-яїіІЇ]{2,30}" th:title="#{reg.nameHelp}"
+                       th:placeholder="#{reg.patron}" type="text">
+            </div>
+            <div>
+                <label class="text-danger" th:if="${#fields.hasErrors('email')}"
+                       th:errors="*{email}"></label>
             </div>
             <div class="form-group input-group">
-                <div class="form-group input-group">
-                    <p><label class="text-danger" th:if="${#fields.hasErrors('password')}"
-                              th:errors="*{password}"></label></p>
-                    <input th:field="*{password}" id="password1" name="password1" class="form-control"
-                           required pattern="[\s\S]{6,15}" th:title="#{reg.passHelp}"
-                           th:placeholder="#{reg.password}" type="password">
-                </div> <!-- form-group// -->
+                <input th:field="*{email}" name="email" id="email" class="form-control" required
+                       th:placeholder="#{reg.email}" type="email">
+            </div>
+            <div>
+                <label class="text-danger" th:if="${#fields.hasErrors('password')}"
+                       th:errors="*{password}"></label>
             </div>
             <div class="form-group input-group">
-                <div class="form-group input-group">
-                    <label class="text-danger" th:if="${#fields.hasErrors('password')}"
-                           th:errors="*{password}"></label>
-                </div>
+                <input th:field="*{password}" id="password" name="password" class="form-control"
+                       required pattern="[\s\S]{6,15}" th:title="#{reg.passHelp}"
+                       th:placeholder="#{reg.password}" type="password">
             </div>
-            <input id="password2" name="password2" class="form-control" required
-                   pattern="[\s\S]{6,15}" th:title="#{reg.passHelp}"
-                   th:placeholder="#{reg.spassword}" type="password">
+            <div>
+                <label class="text-danger" th:if="${#fields.hasErrors('password')}"
+                       th:errors="*{password}"></label>
+            </div>
+            <div class="form-group input-group">
+                <input id="repeatedPassword" name="repeatedPassword" class="form-control" required
+                       pattern="[\s\S]{6,15}" th:title="#{reg.passHelp}"
+                       th:placeholder="#{reg.spassword}" type="password">
             </div> <!-- form-group// -->
             <div hidden class="form-group input-group">
                 <input id="role" name="role" th:field="*{role}" class="form-control" value="INSPECTOR">

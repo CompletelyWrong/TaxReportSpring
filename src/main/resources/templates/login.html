@@ -6,7 +6,11 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Marvel HTML Bootstrap 4 Template</title>
+    <link th:rel="icon" th:href="@{/images/favicon.ico}">
+    <link rel="icon" type="image/png" sizes="32x32" th:href="@{/images/favicon-32x32.png}">
+    <link rel="icon" type="image/png" sizes="16x16" th:href="@{/images/favicon-16x16.png}">
+
+    <title th:text="#{user.login}"></title>
 
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/tooplate-style.css">
@@ -19,7 +23,7 @@
 <!-- ABOUT -->
 
     <div class="container">
-        <form class="form-signin" name = "login" method="post" th:action="@{/signIn}">
+        <form class="form-signin" name = "login" method="post" th:action="@{/login}">
             <input type="hidden" name="command" value="login" />
             <div class="text-center mb-4">
                 <img class="mb-4" src="https://getbootstrap.com/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">
@@ -43,7 +47,7 @@
             <p ></p>
             <button class="btn btn-lg btn-primary btn-block" type="submit" th:text="#{log.submit}"></button>
             <p></p>
-            <p><label th:text="#{log.haveno}"></label><a th:href="@{/login}" th:text="#{log.reg}" class="btn-link"></a></p>
+            <p><label th:text="#{log.haveno}"></label><a th:href="@{/register}" th:text="#{log.reg}" class="btn-link"></a></p>
 
             <p class="mt-5 mb-3 text-muted text-center">&copy; 2019</p>
         </form>

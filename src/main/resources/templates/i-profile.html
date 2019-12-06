@@ -4,9 +4,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="description" content="">
 <meta name="author" content="">
-<link rel="icon" href="https://getbootstrap.com/docs/4.0/assets/img/favicons/favicon.ico">
+<link th:rel="icon" th:href="@{/images/favicon.ico}">
+<link rel="icon" type="image/png" sizes="32x32" th:href="@{/images/favicon-32x32.png}">
+<link rel="icon" type="image/png" sizes="16x16" th:href="@{/images/favicon-16x16.png}">
 
-<title>Dashboard Template for Bootstrap</title>
+<title th:text="#{uprofile.prof}"></title>
 
 <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/dashboard/">
 
@@ -17,7 +19,6 @@
 <link th:href="@{/css/dashboard.css}" rel="stylesheet">
 <style type="text/css">/* Chart.js */
 </style>
-</head>
 
 <body>
 <div th:insert="service-header :: header"></div>
@@ -61,7 +62,7 @@
                     </div>
                 </div>
             </form>
-            <a th:href="@{/inspector/update_profile}" class="btn btn-primary btn-lg btn-block" type="submit"
+            <a th:href="@{/inspector/update-profile}" class="btn btn-primary btn-lg btn-block" type="submit"
                style="width: 30%; position: relative; left: 70%;" th:text="#{uprofile.change}"></a>
         </div>
     </div>

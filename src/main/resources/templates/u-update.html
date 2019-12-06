@@ -4,9 +4,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="description" content="">
 <meta name="author" content="">
-<link rel="icon" href="https://getbootstrap.com/docs/4.0/assets/img/favicons/favicon.ico">
+<link th:rel="icon" th:href="@{/images/favicon.ico}">
+<link rel="icon" type="image/png" sizes="32x32" th:href="@{/images/favicon-32x32.png}">
+<link rel="icon" type="image/png" sizes="16x16" th:href="@{/images/favicon-16x16.png}">
 
-<title>Dashboard Template for Bootstrap</title>
+<title th:text="#{uprofile.prof}"></title>
 
 <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/dashboard/">
 
@@ -42,7 +44,7 @@
         </h4>
         <div id="form" style="position: relative; width: 83%; left: 12%; ">
             <div class="col-md-8 order-md-1">
-                <form method="post" th:action="@{/user/confirm_profile}" th:object="${currentUser}"
+                <form method="post" th:action="@{/user/confirm-profile}" th:object="${currentUser}"
                       class="needs-validation">
                     <input name="role" hidden type="text" th:value="${session.user.role}">
                     <input name="id" hidden type="text" th:value="${session.user.id}">
@@ -93,9 +95,9 @@
                                type="password">
                     </div>
                     <div class="mb-3">
-                        <label for="password2" th:text="#{uprofile.updatePass2}">
+                        <label for="repeatedPassword" th:text="#{uprofile.updatePass2}">
                             <span class="text-muted"></span></label>
-                        <input id="password2" name="password2" class="form-control" required="required"
+                        <input id="repeatedPassword" name="repeatedPassword" class="form-control" required="required"
                                pattern="[\s\S]{6,15}" th:title="#{reg.passHelp}" th:placeholder="#{reg.spassword}"
                                type="password">
                     </div>

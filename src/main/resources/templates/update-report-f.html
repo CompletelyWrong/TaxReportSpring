@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="">
+<meta name="author" content="">
+<link th:rel="icon" th:href="@{/images/favicon.ico}">
+<link rel="icon" type="image/png" sizes="32x32" th:href="@{/images/favicon-32x32.png}">
+<link rel="icon" type="image/png" sizes="16x16" th:href="@{/images/favicon-16x16.png}">
+
+<title th:text="#{report.update}"></title>
+
+<link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/dashboard/">
+
+<!-- Bootstrap core CSS -->
+<link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+
+<!-- Custom styles for this template -->
+<link th:href="@{/css/dashboard.css}" rel="stylesheet">
+<style type="text/css">/* Chart.js */
+</style>
+
+<body>
+<div th:insert="service-header :: header"></div>
+
+<div th:insert="userSidebar :: sidebar"></div>
+
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+
+    <h2 style="position: relative; width: 30%; left: 35%" th:text="#{report.update}">
+    </h2>
+    <section id="tabs">
+        <div style="position: relative; left: 5%; width: 30%" class="container">
+            <div class="row">
+                <div class="col-xs-12 ">
+                    <nav>
+                        <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+                            <a class="nav-item nav-link " id="nav-home-tab"
+                               th:href="@{/user/update-report/{id}(id = ${reportId})}"
+                               aria-selected="false" th:text="#{report.form}">
+                            </a>
+                            <a class="nav-item nav-link active" id="nav-profile-tab"
+                               th:href="@{/user/update-report-by-file/{id}(id = ${reportId})}"
+                               aria-selected="true" th:text="#{report.file}">
+                            </a>
+                        </div>
+                    </nav>
+
+
+                </div>
+            </div>
+        </div>
+    </section>
+    <div style="position: relative; left: 24%; width: 30%" class="col-md-8 order-md-1">
+        <form class="needs-validation" enctype="multipart/form-data" method="post"
+              th:action="@{/user/confirm-update-report-by-file/{id}(id = ${reportId})}">
+            <div class="file-field">
+                <div class="btn btn-primary btn-sm" style="position: relative; left: 36%;">
+                    <input required type="file" th:placeholder="#{report.filetype}" accept=".json,.xml"
+                           name="file" id="customFileLang" lang="">
+                    <input hidden type="text" name="report_id" th:value="${reportId}" lang="">
+                    <label for="customFileLang"></label>
+                </div>
+            </div>
+            <p></p>
+            <p></p>
+            <button class="btn btn-primary btn-lg btn-block" style="width: 30%; position: relative; left: 50% "
+                    type="submit" th:text="#{request.submit}">
+            </button>
+        </form>
+    </div>
+</main>
+
+
+</body>
+</html>

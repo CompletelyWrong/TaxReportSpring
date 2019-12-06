@@ -5,9 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="description" content="">
 <meta name="author" content="">
-<link rel="icon" href="https://getbootstrap.com/docs/4.0/assets/img/favicons/favicon.ico">
+<link th:rel="icon" th:href="@{/images/favicon.ico}">
+<link rel="icon" type="image/png" sizes="32x32" th:href="@{/images/favicon-32x32.png}">
+<link rel="icon" type="image/png" sizes="16x16" th:href="@{/images/favicon-16x16.png}">
 
-<title>Dashboard Template for Bootstrap</title>
+<title th:text="#{request.main}"></title>
 
 <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/dashboard/">
 
@@ -32,7 +34,7 @@
 
         <div id="form" style="position: relative; left: 17%; width: 1000px ">
             <div class="col-md-8 order-md-1">
-                <form method="post" th:action="@{/user/confirm_request}" th:object="${request}"
+                <form method="post" th:action="@{/user/confirm-request}" th:object="${request}"
                       class="needs-validation">
                     <div class="row">
                         <div class="col-md-5 mb-3">

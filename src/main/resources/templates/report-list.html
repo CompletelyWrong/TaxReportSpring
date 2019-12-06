@@ -4,9 +4,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="description" content="">
 <meta name="author" content="">
-<link rel="icon" href="https://getbootstrap.com/docs/4.0/assets/img/favicons/favicon.ico">
+<link th:rel="icon" th:href="@{/images/favicon.ico}">
+<link rel="icon" type="image/png" sizes="32x32" th:href="@{/images/favicon-32x32.png}">
+<link rel="icon" type="image/png" sizes="16x16" th:href="@{/images/favicon-16x16.png}">
 
-<title>Dashboard Template for Bootstrap</title>
+<title th:text="#{user.showReports}"></title>
 
 <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/dashboard/">
 
@@ -27,7 +29,7 @@
 <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
     <h4 style="position: relative; width: 500px; left: 40%" class="mb-3" th:text="#{user.showReports}">
     </h4>
-    <div style="position: relative; width: 75%; left: 25%">
+    <div style="position: relative; width: 75%; left: 25%" th:if="${not #lists.isEmpty(reports.getContent())}">
         <div class="row col-md-6">
             <table class="table">
                 <tr>
@@ -56,7 +58,7 @@
             <li th:class="page-item" th:if="${reports.getTotalPages() > 1}" class="pagination"
                 th:each="pageNumber : ${#numbers.sequence(1, reports.getTotalPages())}"
                 th:classappend="${pageNumber==reports.number + 1} ? 'active'">
-                <a th:class="page-link" th:href="@{requests(page=${pageNumber}-1)}"
+                <a th:class="page-link" th:href="@{reports?&(page=${pageNumber}-1)}"
                    th:text=${pageNumber}></a>
             </li>
         </ul>
@@ -64,6 +66,8 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"></script>
     </div>
+    <div th:if="${#lists.isEmpty(reports.getContent())}"><h3 style="position: relative; width: 500px; left: 40%"
+                                                             th:text="#{report.empty}"></h3></div>
 </main>
 </body>
 </html>

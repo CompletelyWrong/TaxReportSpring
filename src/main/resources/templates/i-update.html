@@ -5,9 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="description" content="">
 <meta name="author" content="">
-<link rel="icon" href="https://getbootstrap.com/docs/4.0/assets/img/favicons/favicon.ico">
+<link rel="icon" th:href="@{/images/favicon.ico}">
+<link rel="icon" type="image/png" sizes="32x32" th:href="@{/images/favicon-32x32.png}">
+<link rel="icon" type="image/png" sizes="16x16" th:href="@{/images/favicon-16x16.png}">
 
-<title>Dashboard Template for Bootstrap</title>
+<title th:text="#{uprofile.prof}"></title>
 
 <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/dashboard/">
 
@@ -29,9 +31,10 @@
     </h4>
     <div id="form" style="position: relative; width: 83%; left: 17%; ">
         <div class="col-md-8 order-md-1">
-            <form name="update"  method="post" th:action="@{/inspector/update_profile}" th:object="${current_inspector}">
-                <input hidden name="id" th:value="${current_inspector.id}">
-                <input  hidden name="role" th:value="${current_inspector.role}">
+            <form name="update" method="post" th:action="@{/inspector/update-profile}" th:object="${currentInspector}">
+                <input hidden name="id" th:value="${currentInspector.id}">
+                <input hidden name="role" th:value="${currentInspector.role}">
+
                 <div class="mb-3">
                     <label th:text="#{uprofile.surname}">
                         <span class="text-muted"></span></label>
@@ -41,7 +44,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label  th:text="#{uprofile.name}">
+                    <label th:text="#{uprofile.name}">
                         <span class="text-muted"></span></label>
                     <input th:field="*{name}" name="name1" class="form-control" required
                            pattern="[A-Za-zА-Яа-яїіІЇ]{2,30}" th:title="#{reg.nameHelp}" th:placeholder="#{reg.name}"
@@ -49,7 +52,7 @@
                 </div>
 
                 <div class="mb-3">
-                    <label  th:text="#{uprofile.patron}">
+                    <label th:text="#{uprofile.patron}">
                         <span class="text-muted"></span></label>
                     <input th:field="*{patronymic}" name="patron" class="form-control" required
                            pattern="[A-Za-zА-Яа-яїіІЇ]{2,30}" th:title="#{reg.nameHelp}"
@@ -63,16 +66,16 @@
                            th:placeholder="#{reg.email}" type="email">
                 </div>
                 <div class="mb-3">
-                    <label  th:text="#{uprofile.updatePass1}">
+                    <label th:text="#{uprofile.updatePass1}">
                         <span class="text-muted"></span></label>
-                    <input th:field="*{password}" id="password1" name="password1" class="form-control"
+                    <input th:field="*{password}" id="password" name="password" class="form-control"
                            required pattern="[\s\S]{6,15}" th:title="#{reg.passHelp}"
                            th:placeholder="#{reg.password}" type="password">
                 </div>
                 <div class="mb-3">
-                    <label for="password2" th:text="#{uprofile.updatePass2}">
+                    <label for="repeatedPassword" th:text="#{uprofile.updatePass2}">
                         <span class="text-muted"></span></label>
-                    <input id="password2" name="password2" class="form-control" required
+                    <input id="repeatedPassword" name="repeatedPassword" class="form-control" required
                            pattern="[\s\S]{6,15}" th:title="#{reg.passHelp}"
                            th:placeholder="#{reg.spassword}" type="password">
                 </div>

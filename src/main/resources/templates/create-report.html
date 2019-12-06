@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="description" content="">
+<meta name="author" content="">
+<link rel="icon" th:href="@{/images/favicon.ico}">
+<link rel="icon" type="image/png" sizes="32x32" th:href="@{/images/favicon-32x32.png}">
+<link rel="icon" type="image/png" sizes="16x16" th:href="@{/images/favicon-16x16.png}">
+
+<title th:text="#{report.main}"></title>
+
+<link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/dashboard/">
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+<title>Dashboard Template for Bootstrap</title>
+
+<!-- Bootstrap core CSS -->
+<link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
+
+<!-- Custom styles for this template -->
+<link th:href="@{/css/dashboard.css}" rel="stylesheet">
+<style type="text/css">/* Chart.js */
+</style>
+
+<body>
+<div th:insert="service-header :: header"></div>
+
+<div th:insert="userSidebar :: sidebar"></div>
+<main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+    <h4 style="position: relative; width: 30%; left: 35%" class="mb-3" th:text="#{report.main}">
+    </h4>
+    <section id="tabs">
+        <div style="position: relative; left: 5%; width: 30%" class="container">
+            <div class="row">
+                <div class="col-xs-12 ">
+                    <nav>
+                        <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+                            <a class="nav-item nav-link active" id="nav-home-tab"
+                               th:href="@{/user/create-report}" aria-selected="true"
+                               th:text="#{report.form}">
+                            </a>
+                            <a class="nav-item nav-link" id="nav-profile-tab"
+                               th:href="@{/user/create-report-file}" aria-selected="false"
+                               th:text="#{report.file}">
+                            </a>
+                        </div>
+                    </nav>
+
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="form" style="position: relative; width: 83%; left: 17%; ">
+        <div class="col-md-8 order-md-1">
+            <form method="POST"
+                  th:action="@{/user/confirm-report}" th:object="${reportStructure}" class="needs-validation">
+                <div>
+                    <label class="text-danger" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></label>
+                </div>
+                <div class="mb-3">
+                    <label for="fullName" th:text="#{report.pib}">
+                    </label>
+                    <input type="text" th:field="*{fullName}" class="form-control" id="fullName" name="fullName"
+                           required="">
+                </div>
+                <div>
+                    <label class="text-danger" th:if="${#fields.hasErrors('type')}" th:errors="*{type}"></label>
+                </div>
+                <div class="mb-3">
+                    <label for="type" th:text="#{report.type}">
+                    </label>
+                    <input type="text" th:field="*{type}" class="form-control" id="type" name="type" required="">
+                </div>
+                <div>
+                    <label class="text-danger" th:if="${#fields.hasErrors('innCode')}" th:errors="*{innCode}"></label>
+                </div>
+                <div class="mb-3">
+                    <label for="innCode" th:text="#{reg.code}">
+                    </label>
+                    <input style="width: 49%;" th:field="*{innCode}" type="text" class="form-control" id="innCode"
+                           name="innCode" required="">
+                </div>
+                <p style="position: relative;" th:text="#{report.period}">
+                </p>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="periodStart" th:text="#{report.periodStart}">
+                        </label>
+                        <div>
+                            <label class="text-danger" th:if="${#fields.hasErrors('periodStart')}"
+                                   th:errors="*{periodStart}"></label>
+                        </div>
+                        <input name="periodStart" th:field="*{periodStart}" required id="periodStart" type="date"
+                               class="form-control">
+
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <label for="periodEnd" th:text="#{report.periodEnd}">
+                        </label>
+                        <div>
+                            <label class="text-danger" th:if="${#fields.hasErrors('periodEnd')}"
+                                   th:errors="*{periodEnd}"></label>
+                        </div>
+                        <input name="periodEnd" th:field="*{periodEnd}" required id="periodEnd" type="date"
+                               class="form-control">
+                    </div>
+                </div>
+                <p style="position: relative;" th:text="#{report.income}">
+                </p>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <div>
+                            <label class="text-danger" th:if="${#fields.hasErrors('incomeCode')}"
+                                   th:errors="*{incomeCode}"></label>
+                        </div>
+                        <div class="form-label-group">
+                            <input th:field="*{incomeCode}" type="text" name="incomeCode" id="incomeCode"
+                                   class="form-control"
+                                   th:placeholder="#{report.incomeCode}" required autofocus>
+                        </div>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <div>
+                            <label class="text-danger" th:if="${#fields.hasErrors('incomeValue')}"
+                                   th:errors="*{incomeValue}"></label>
+                        </div>
+                        <input th:field="*{incomeValue}" type="text" name="incomeValue" id="incomeValue"
+                               class="form-control"
+                               th:placeholder="#{report.incomeValue}" required autofocus>
+                    </div>
+                </div>
+                <p style="position: relative;" th:text="#{report.outcome}">
+                </p>
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+                        <div>
+                            <label class="text-danger" th:if="${#fields.hasErrors('outcomeCode')}"
+                                   th:errors="*{outcomeCode}"></label>
+                        </div>
+                        <input th:field="*{outcomeCode}" type="text" name="outcomeCode" id="outcomeCode"
+                               class="form-control"
+                               th:placeholder="#{report.incomeCode}" required autofocus>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <div>
+                            <label class="text-danger" th:if="${#fields.hasErrors('outcomeValue')}"
+                                   th:errors="*{outcomeValue}"></label>
+                        </div>
+                        <input th:field="*{outcomeValue}" type="text" name="outcomeValue" id="outcomeValue"
+                               class="form-control"
+                               th:placeholder="#{report.incomeValue}" required autofocus>
+                    </div>
+                </div>
+                <p style="position: relative;" th:text="#{report.procent}">
+                </p>
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+                        <div>
+                            <label class="text-danger" th:if="${#fields.hasErrors('percentCode')}"
+                                   th:errors="*{percentCode}"></label>
+                        </div>
+                        <input th:field="*{percentCode}" type="text" name="percentCode" id="percentCode"
+                               class="form-control"
+                               th:placeholder="#{report.incomeCode}" required autofocus>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <div>
+                            <label class="text-danger" th:if="${#fields.hasErrors('percentValue')}"
+                                   th:errors="*{percentValue}"></label>
+                        </div>
+                        <input th:field="*{percentValue}" type="text" name="percentValue" id="percentValue"
+                               class="form-control"
+                               th:placeholder="#{report.incomeValue}" required autofocus>
+                    </div>
+                </div>
+                <p style="position: relative;" th:text="#{request.clear}">
+                </p>
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+                        <div>
+                            <label class="text-danger" th:if="${#fields.hasErrors('clearCode')}"
+                                   th:errors="*{clearCode}"></label>
+                        </div>
+                        <input th:field="*{clearCode}" type="text" name="clearCode" id="clearCode" class="form-control"
+                               th:placeholder="#{report.incomeCode}" required autofocus>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <div>
+                            <label class="text-danger" th:if="${#fields.hasErrors('clearValue')}"
+                                   th:errors="*{clearValue}"></label>
+                        </div>
+                        <input th:field="*{clearValue}" type="text" name="clearValue" id="clearValue"
+                               class="form-control"
+                               th:placeholder="#{report.incomeValue}" required autofocus>
+                    </div>
+                </div>
+                <button class="btn btn-primary btn-lg btn-block" style="width: 30%; position: relative; left: 38% "
+                        type="submit" th:text="#{request.submit}">
+                </button>
+            </form>
+            <p></p>
+            <p></p>
+        </div>
+    </div>
+</main>
+</body>
+</html>
+

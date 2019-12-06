@@ -4,9 +4,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="description" content="">
 <meta name="author" content="">
-<link rel="icon" href="https://getbootstrap.com/docs/4.0/assets/img/favicons/favicon.ico">
+<link th:rel="icon" th:href="@{/images/favicon.ico}">
+<link rel="icon" type="image/png" sizes="32x32" th:href="@{/images/favicon-32x32.png}">
+<link rel="icon" type="image/png" sizes="16x16" th:href="@{/images/favicon-16x16.png}">
 
-<title>Dashboard Template for Bootstrap</title>
+<title th:text="#{report.historys}"></title>
 
 <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/dashboard/">
 
@@ -35,11 +37,11 @@
                     <nav>
                         <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
                             <a class="nav-item nav-link " id="nav-home-tab"
-                               th:href="@{/user/report/{report_id}(report_id = ${report_id})}" aria-selected="false"
+                               th:href="@{/user/report/{report_id}(report_id = ${reportId})}" aria-selected="false"
                                th:text="#{report.report}">
                             </a>
                             <a class=" nav-item nav-link active" id="nav-profile-tab"
-                               th:href="@{/user/report_history/{report_id}(report_id = ${report_id})}"
+                               th:href="@{/user/report-history/{report_id}(report_id = ${reportId})}"
                                aria-selected="true" th:text="#{report.history}">
                             </a>
                         </div>
@@ -50,7 +52,7 @@
             </div>
         </div>
     </section>
-    <div>
+    <div th:if="${not #lists.isEmpty(actions.getContent())}">
         <div class="row col-md-6">
             <table style="position: relative; width: 80%; left: 60%" class="table">
                 <tr>
@@ -71,22 +73,26 @@
                     <td th:text="${action.inspector.id}"></td>
                     <td th:text="${action.dateTime}"></td>
                     <td th:text="${action.message}"></td>
-                    <td th:text="${action.action}"></td>
+                    <td th:text="${action.actionType}"></td>
                 </tr>
             </table>
+
         </div>
-        <ul class="pagination">
+        <ul class="pagination" style="position: relative; left: 40%">
             <li th:class="page-item" th:if="${actions.getTotalPages() > 1}" class="pagination"
                 th:each="pageNumber : ${#numbers.sequence(1, actions.getTotalPages())}"
                 th:classappend="${pageNumber==actions.number + 1} ? 'active'">
-                <a th:class="page-link" th:href="@{requests(page=${pageNumber}-1)}"
+                <a th:class="page-link" th:href="@{/user/report-history/{id}?(page=${pageNumber}-1, id = ${reportId})}"
                    th:text=${pageNumber}></a>
             </li>
         </ul>
+
+
         <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"></script>
     </div>
+    <div th:if="${#lists.isEmpty(actions.getContent())}"><h3 style="position: relative; width: 500px; left: 40%" th:text="#{report.empty}"></h3></div>
 </main>
 </body>
 </html>

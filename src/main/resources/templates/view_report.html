@@ -4,21 +4,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="description" content="">
 <meta name="author" content="">
-<link rel="icon" href="https://getbootstrap.com/docs/4.0/assets/img/favicons/favicon.ico">
 
-<title>Dashboard Template for Bootstrap</title>
+<link th:rel="icon" th:href="@{/images/favicon.ico}">
+<link rel="icon" type="image/png" sizes="32x32" th:href="@{/images/favicon-32x32.png}">
+<link rel="icon" type="image/png" sizes="16x16" th:href="@{/images/favicon-16x16.png}">
 
-<link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/dashboard/">
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-        crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-        crossorigin="anonymous"></script>
-<title>Dashboard Template for Bootstrap</title>
+<title th:text="#{report.show}"></title>
 
 <!-- Bootstrap core CSS -->
 <link th:href="@{/css/bootstrap.min.css}" rel="stylesheet">
@@ -27,7 +18,6 @@
 <link th:href="@{/css/dashboard.css}" rel="stylesheet">
 <style type="text/css">/* Chart.js */
 </style>
-</head>
 
 <body>
 <div th:insert="service-header :: header"></div>
@@ -44,11 +34,11 @@
                     <nav>
                         <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
                             <a class="nav-item nav-link active" id="nav-home-tab"
-                               th:href="@{/user/report/{report_id}(report_id = ${report_id})}" aria-selected="true"
+                               th:href="@{/user/report/{report_id}(report_id = ${reportId})}" aria-selected="true"
                                th:text="#{report.report}">
                             </a>
                             <a class="nav-item nav-link" id="nav-profile-tab"
-                               th:href="@{/user/report_history/{report_id}(report_id = ${report_id})}"
+                               th:href="@{/user/report-history/{report_id}(report_id = ${reportId})}"
                                aria-selected="false" th:text="#{report.history}">
                             </a>
                         </div>
@@ -65,19 +55,19 @@
                 <div class="mb-3">
                     <label for="pib" th:text="#{report.pib}">
                     </label>
-                    <input th:value="${report.fullName}" disabled type="text" class="form-control" id="pib" name="pib"
+                    <input th:value="${reportStructure.fullName}" disabled type="text" class="form-control" id="pib" name="pib"
                            required="">
                 </div>
                 <div class="mb-3">
                     <label for="type" th:text="#{report.type}">
                     </label>
-                    <input th:value="${report.type}" disabled type="text" class="form-control" id="type" name="type"
+                    <input th:value="${reportStructure.type}" disabled type="text" class="form-control" id="type" name="type"
                            required="">
                 </div>
                 <div class="mb-3">
                     <label for="code" th:text="#{reg.code}">
                     </label>
-                    <input th:value="${report.innCode}" disabled style="width: 49%;" type="text" class="form-control"
+                    <input th:value="${reportStructure.innCode}" disabled style="width: 49%;" type="text" class="form-control"
                            id="code" name="code" required="">
                 </div>
                 <p style="position: relative;" th:text="#{report.period}">
@@ -86,14 +76,14 @@
                     <div class="col-md-6 mb-3">
                         <label for="date1" th:text="#{report.periodStart}">
                         </label>
-                        <input th:value="${report.periodStart}" disabled name="date" required id="date1" type="date"
+                        <input th:value="${reportStructure.periodStart}" disabled name="date" required id="date1" type="date"
                                class="form-control">
 
                     </div>
                     <div class="col-md-6 mb-3">
                         <label for="date2" th:text="#{report.periodEnd}">
                         </label>
-                        <input th:value="${report.periodEnd}" disabled name="date" required id="date2" type="date"
+                        <input th:value="${reportStructure.periodEnd}" disabled name="date" required id="date2" type="date"
                                class="form-control">
                     </div>
                 </div>
@@ -102,13 +92,13 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <div class="form-label-group">
-                            <input th:value="${report.clearCode}" disabled type="text"
+                            <input th:value="${reportStructure.incomeCode}" disabled type="text"
                                    name="incomeCode" id="incomeCode"
                                    class="form-control" required autofocus>
                         </div>
                     </div>
                     <div class="col-md-6 mb-3">
-                        <input th:value="${report.clearValue}" disabled type="text"
+                        <input th:value="${reportStructure.incomeValue}" disabled type="text"
                                name="incomeValue" id="incomeValue"
                                class="form-control" required autofocus>
                     </div>
@@ -117,11 +107,11 @@
                 </p>
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <input th:value="${report.incomeCode}" disabled type="text"
+                        <input th:value="${reportStructure.outcomeCode}" disabled type="text"
                                name="outcomeCode" id="outcomeCode" class="form-control" required autofocus>
                     </div>
                     <div class="col-md-6 mb-3">
-                        <input th:value="${report.incomeValue}" disabled type="text"
+                        <input th:value="${reportStructure.outcomeValue}" disabled type="text"
                                name="outcomeValue" id="outcomeValue"
                                class="form-control" required autofocus>
                     </div>
@@ -130,12 +120,12 @@
                 </p>
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <input th:value="${report.outcomeCode}" disabled type="text"
+                        <input th:value="${reportStructure.percentCode}" disabled type="text"
                                name="procentCode" id="procentCode"
                                class="form-control" required autofocus>
                     </div>
                     <div class="col-md-6 mb-3">
-                        <input th:value="${report.outcomeValue}" disabled type="text"
+                        <input th:value="${reportStructure.percentValue}" disabled type="text"
                                name="procentValue" id="procentValue"
                                class="form-control" required
                                autofocus>
@@ -145,20 +135,20 @@
                 </p>
                 <div class="row">
                     <div class="col-md-6 mb-3">
-                        <input th:value="${report.percentCode}" disabled type="text"
+                        <input th:value="${reportStructure.clearCode}" disabled type="text"
                                name="clearCode" id="clearCode"
                                class="form-control" required
                                autofocus>
                     </div>
                     <div class="col-md-6 mb-3">
-                        <input th:value="${report.percentValue}" disabled type="text"
+                        <input th:value="${reportStructure.clearValue}" disabled type="text"
                                name="clearValue" id="clearValue"
                                class="form-control">
                     </div>
                 </div>
 
             </form>
-            <a th:href="@{/user/update_report/{report_id}(report_id = ${report_id})}"
+            <a th:href="@{/user/update-report/{report_id}(report_id = ${reportId})}"
                class="btn btn-primary btn-lg btn-block" type="submit"
                style="width: 30%; position: relative; left: 40%;" th:text="#{report.change}">
             </a>
