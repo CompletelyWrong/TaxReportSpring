@@ -1,13 +1,14 @@
 package com.project.reportsystem.controller;
 
-import com.google.gson.Gson;
 import com.project.reportsystem.domain.*;
-import com.project.reportsystem.entity.Role;
-import com.project.reportsystem.exception.ReportFileException;
+import com.project.reportsystem.entity.ActionType;
+import com.project.reportsystem.entity.ReportStatus;
+import com.project.reportsystem.exception.NotEqualsPasswordException;
 import com.project.reportsystem.service.ActionService;
 import com.project.reportsystem.service.InspectorService;
 import com.project.reportsystem.service.ReportService;
 import com.project.reportsystem.service.UserService;
+import com.project.reportsystem.util.JsonHelper;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,17 +16,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 @Controller()
@@ -35,19 +33,11 @@ public class InspectorController {
     private final InspectorService inspectorService;
     private final ReportService reportService;
     private final ActionService actionService;
+    private final JsonHelper jsonHelper;
 
     @GetMapping("")
     public String mainPage() {
-        return "i-profile";
-    }
-
-    @GetMapping("/update_profile")
-    public ModelAndView showUpdateProfile(HttpSession session) {
-        ModelAndView modelAndView = new ModelAndView("i-update");
-        Inspector inspector = (Inspector) session.getAttribute("user");
-        System.out.println(inspector);
-        modelAndView.addObject("current_inspector", inspector);
-        return modelAndView;
+        return "redirect:/inspector/users";
     }
 
     @GetMapping("/profile")
@@ -55,69 +45,99 @@ public class InspectorController {
         return "i-profile";
     }
 
-    @PostMapping("/update_profile")
-    public String confirmUpdateProfile(@Valid Inspector inspector, BindingResult result, HttpSession session) {
+    @GetMapping("/update-profile")
+    public ModelAndView showUpdateProfile(HttpSession session) {
+        ModelAndView modelAndView = new ModelAndView("i-update");
+        Inspector inspector = getFormSession(session);
+        modelAndView.addObject("currentInspector", inspector);
+
+        return modelAndView;
+    }
+
+    @PostMapping("/update-profile")
+    public String confirmUpdateProfile(@Valid Inspector inspector, BindingResult result, HttpSession session,
+                                       @RequestParam("password") String password,
+                                       @RequestParam("repeatedPassword") String repeatedPassword) {
         if (result.hasErrors()) {
             return "i-update";
         }
-        System.out.println(inspector);
+
+        if (!Objects.equals(password, repeatedPassword)) {
+            throw new NotEqualsPasswordException("Your password was not equals");
+        }
+
         inspectorService.updateInfo(inspector);
         session.setAttribute("user", inspector);
+
         return "redirect:/inspector/profile";
     }
 
-    @GetMapping("/inspector/users")
-    public String showAllUsers(HttpSession session, Model model,
-                               @PageableDefault(sort = {"id"},
-                                       direction = Sort.Direction.DESC) Pageable pageable) {
-        Inspector user = (Inspector) session.getAttribute("user");
-        Page<User> allByInspectorId = userService.findAllByInspectorId(user.getId(), pageable);
-        model.addAttribute("users", allByInspectorId);
-        return "inspector/current-user-list";
+    @GetMapping("/users")
+    public ModelAndView showAllUsers(HttpSession session, @PageableDefault(sort = {"id"},
+            direction = Sort.Direction.DESC) Pageable pageable) {
+        ModelAndView modelAndView = new ModelAndView("current-user-list");
+        Inspector user = getFormSession(session);
+        Page<User> users = userService.findAllByInspectorId(user.getId(), pageable);
+        modelAndView.addObject("users", users);
+
+        return modelAndView;
     }
 
-    @GetMapping("/inspector/user_reports{id}")
-    public String showUserReports(@PathVariable Long id, HttpSession session, Model model,
-                                  @PageableDefault(sort = {"id"},
-                                          direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<Report> allForUserById = reportService.findAllByUserId(id, pageable);
-        model.addAttribute("reports", allForUserById);
-        return "inspector/inspector_report-list";
+    @GetMapping("/user-reports/{id}")
+    public ModelAndView showUserReports(@PathVariable Long id, @PageableDefault(sort = {"id"},
+            direction = Sort.Direction.DESC) Pageable pageable) {
+        ModelAndView modelAndView = new ModelAndView("inspector_report-list");
+        Page<Report> reports = reportService.findAllByUserId(id, pageable);
+        modelAndView.addObject("reports", reports);
+        modelAndView.addObject("userId", id);
+
+        return modelAndView;
     }
 
-    @GetMapping("/inspector/read_report{id}")
-    public String showReportById(@PathVariable Long id, HttpSession session, Model model) {
-        Report report = reportService.findById(id);
-        ReportStructure reportStructure = readFromJson(report);
-        model.addAttribute("report", reportStructure);
-        model.addAttribute("report_id", report.getId());
+    @GetMapping("/read-report/{id}")
+    public ModelAndView showReportById(@PathVariable("id") Long reportId) {
+        ModelAndView modelAndView = new ModelAndView("read-report");
+        Report report = reportService.findById(reportId);
+        ReportStructure reportStructure = jsonHelper.readFromJson(report.getFileLink());
+        modelAndView.addObject("action", new Action());
+        modelAndView.addObject("report", reportStructure);
+        modelAndView.addObject("reportId", report.getId());
 
-        return "inspector/read-report";
+        return modelAndView;
     }
 
-    @PostMapping("/inspector/read_report{id}")
-    public String confirmReportAssessment(@PathVariable Long id, HttpSession session,
-                                          @ModelAttribute("action")
+    @PostMapping("/confirm-report/{reportId}")
+    public String confirmReportAssessment(@PathVariable Long reportId, HttpSession session,
                                           @Valid Action action,
                                           BindingResult result) {
         if (result.hasErrors()) {
-            return "user/create_request";
+            return "redirect:/inspector/read-report/" + reportId;
         }
-        Report report = reportService.findById(id);
-        Inspector inspector = (Inspector) session.getAttribute("user");
+
+        Report report = reportService.findById(reportId);
+        Inspector inspector = getFormSession(session);
         action.setInspector(inspector);
         action.setDateTime(LocalDateTime.now());
         actionService.addActionToReport(action, report);
-        return "inspector/read-report";
+        report.setStatus(getReportStatus(action.getActionType(), report));
+        reportService.updateReport(report);
+
+        return "redirect:/inspector/users";
     }
 
-    private static ReportStructure readFromJson(Report report) {
-        ReportStructure structure;
-        try (Reader reader = new FileReader(report.getFileLink())) {
-            structure = new Gson().fromJson(reader, ReportStructure.class);
-        } catch (IOException e) {
-            throw new ReportFileException("Ur file was corrupted");
+    private ReportStatus getReportStatus(ActionType actionType, Report report) {
+        switch (actionType) {
+            case REJECT:
+            case REQUEST_CHANGES:
+                return ReportStatus.REJECTED;
+            case ACCEPT:
+                return ReportStatus.ACCEPTED;
+            default:
+                return report.getStatus();
         }
-        return structure;
+    }
+
+    private Inspector getFormSession(HttpSession session) {
+        return (Inspector) session.getAttribute("user");
     }
 }

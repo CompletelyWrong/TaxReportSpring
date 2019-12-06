@@ -5,6 +5,7 @@ import com.project.reportsystem.domain.Inspector;
 import com.project.reportsystem.domain.Request;
 import com.project.reportsystem.domain.User;
 import com.project.reportsystem.entity.Role;
+import com.project.reportsystem.exception.NotEqualsPasswordException;
 import com.project.reportsystem.service.InspectorService;
 import com.project.reportsystem.service.RequestService;
 import com.project.reportsystem.service.UserService;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.validation.Valid;
+import java.util.Objects;
 
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 @Controller
@@ -35,62 +37,76 @@ public class AdminController {
         return "redirect:/admin/users";
     }
 
-    @GetMapping("/create_inspector")
+    @GetMapping("/create-inspector")
     public ModelAndView createInspector() {
         ModelAndView modelAndView = new ModelAndView("create-inspector");
-        modelAndView.addObject("inspector", Inspector.builder().role(Role.INSPECTOR).build());
+        modelAndView.addObject("inspector", Inspector.builder()
+                .role(Role.INSPECTOR)
+                .build());
+
         return modelAndView;
     }
 
-    @PostMapping("/confirm_create")
-    public String confirmCreatingInspector(@Valid Inspector inspector,
-                                           BindingResult result) {
+    @PostMapping("/confirm-create")
+    public String confirmCreatingInspector(@Valid Inspector inspector, BindingResult result,
+                                           @RequestParam("password") String password,
+                                           @RequestParam("repeatedPassword") String repeatedPassword) {
         if (result.hasErrors()) {
             return "create-inspector";
         }
+
+        if (!Objects.equals(password, repeatedPassword)) {
+            throw new NotEqualsPasswordException("Your password was not equals");
+        }
+
         inspectorService.createInspector(inspector);
-        return "redirect:/admin/create_inspector";
+
+        return "redirect:/admin/inspectors";
     }
 
-    @GetMapping("/apply_request/{id}/user/{user_id}")
-    public String applyRequest(@PathVariable Long id,
-                               @PathVariable("user_id") Long userId) {
+    @GetMapping("/apply-request/{id}/user/{userId}")
+    public String applyRequest(@PathVariable Long id, @PathVariable("userId") Long userId) {
         User user = userService.findById(userId);
         userService.changeInspectorForUser(user);
         requestService.deleteRequestById(id);
+
         return "redirect:/admin/requests";
     }
 
-    @GetMapping("/reject_request/{id}")
+    @GetMapping("/reject-request/{id}")
     public String rejectRequest(@PathVariable Long id) {
         requestService.deleteRequestById(id);
+
         return "redirect:/admin/requests";
     }
 
     @GetMapping("/users")
-    public String showUsers(Model model,
-                            @PageableDefault(sort = {"id"},
-                                    direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<User> all = userService.findAll(pageable);
-        model.addAttribute("users", all);
-        return "users-list";
+    public ModelAndView showUsers(Model model,
+                                  @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
+        ModelAndView modelAndView = new ModelAndView("users-list");
+        Page<User> users = userService.findAll(pageable);
+        modelAndView.addObject("users", users);
+
+        return modelAndView;
     }
 
     @GetMapping("/requests")
-    public String showRequest(Model model,
-                              @PageableDefault(sort = {"id"},
-                                      direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<Request> all = requestService.findAll(pageable);
-        model.addAttribute("requests", all);
-        return "request-list";
+    public ModelAndView showRequest(Model model,
+                                    @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
+        ModelAndView modelAndView = new ModelAndView("request-list");
+        Page<Request> requests = requestService.findAll(pageable);
+        modelAndView.addObject("requests", requests);
+
+        return modelAndView;
     }
 
     @GetMapping("/inspectors")
-    public String showInspectors(Model model,
-                                 @PageableDefault(sort = {"id"},
-                                         direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<Inspector> all = inspectorService.findAll(pageable);
-        model.addAttribute("inspectors", all);
-        return "inspectors-list";
+    public ModelAndView showInspectors(Model model,
+                                       @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
+        ModelAndView modelAndView = new ModelAndView("inspectors-list");
+        Page<Inspector> inspectors = inspectorService.findAll(pageable);
+        modelAndView.addObject("inspectors", inspectors);
+
+        return modelAndView;
     }
 }

@@ -3,25 +3,31 @@ package com.project.reportsystem.controller;
 import com.project.reportsystem.domain.Inspector;
 import com.project.reportsystem.domain.User;
 import com.project.reportsystem.entity.Role;
+import com.project.reportsystem.exception.NotEqualsPasswordException;
 import com.project.reportsystem.service.InspectorService;
 import com.project.reportsystem.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.util.Objects;
 
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 @Controller
+@RequestMapping("/")
 public class LoginAndRegisterController {
     private final UserService userService;
     private final InspectorService inspectorService;
 
-    @GetMapping("/")
+    @GetMapping("")
     public String mainPage() {
         return "index";
     }
@@ -32,72 +38,64 @@ public class LoginAndRegisterController {
     }
 
     @GetMapping("/register")
-    public String registerForm() {
-        return "register";
+    public ModelAndView registerForm() {
+        ModelAndView modelAndView = new ModelAndView("register");
+        modelAndView.addObject("user", new User());
+
+        return modelAndView;
     }
 
     @GetMapping("/signOut")
     public String signOut(HttpSession session) {
         session.invalidate();
 
-        return "index";
+        return "redirect:/";
     }
 
-    @PostMapping("/signIn")
-    public String signIn(HttpServletRequest request) {
-        String email = request.getParameter("email");
-        String password = request.getParameter("password");
+    @PostMapping("/login")
+    public String signIn(@RequestParam("email") String email,
+                         @RequestParam("password") String password,
+                         @RequestParam(value = "worker", required = false) String isWorker,
+                         HttpSession session) {
         Role role;
-        if (Objects.isNull(request.getParameter("worker"))) {
+
+        if (Objects.isNull(isWorker)) {
             User user = userService.login(email, password);
             role = user.getRole();
-            request.getSession().setAttribute("user", user);
+            session.setAttribute("user", user);
         } else {
             Inspector inspector = inspectorService.login(email, password);
             role = inspector.getRole();
-            request.getSession().setAttribute("user", inspector);
+            session.setAttribute("user", inspector);
         }
-
         switch (role) {
             case ADMIN:
-                return "redirect:/admin";
+                return "redirect:/admin/";
             case INSPECTOR:
-                return "redirect:/inspector";
+                return "redirect:/inspector/";
             case INDIVIDUAL_TAXPAYER:
             case LEGAL_TAXPAYER:
-                return "redirect:/user";
+                return "redirect:/user/";
             default:
-                return "index";
+                return "redirect:/";
         }
     }
 
     @PostMapping("/signUp")
-    public String signUp(HttpServletRequest request) {
-        String surname = request.getParameter("fullName");
-        String name = request.getParameter("name1");
-        String patronymic = request.getParameter("patron");
-        String email = request.getParameter("email");
-        String password = request.getParameter("password1");
-        String repeatedPassword = request.getParameter("password2");
-        Integer innCode = Integer.parseInt(request.getParameter("number"));
-        Role role = Role.valueOf(request.getParameter("role_type"));
-
-        if (!Objects.equals(password, repeatedPassword)) {
+    public String signUp(@Valid User user,
+                         BindingResult result,
+                         @RequestParam("password") String password,
+                         @RequestParam("repeatedPassword") String repeatedPassword) {
+        if (result.hasErrors()) {
             return "register";
         }
 
-        User user = User.builder()
-                .name(name)
-                .surname(surname)
-                .patronymic(patronymic)
-                .email(email)
-                .password(password)
-                .role(role)
-                .identificationCode(innCode)
-                .build();
+        if (!Objects.equals(password, repeatedPassword)) {
+            throw new NotEqualsPasswordException("Your password was not equals");
+        }
 
         userService.register(user);
 
-        return "index";
+        return "redirect:/";
     }
 }

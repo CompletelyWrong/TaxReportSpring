@@ -1,14 +1,12 @@
 package com.project.reportsystem.controller;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.project.reportsystem.domain.*;
 import com.project.reportsystem.entity.ReportStatus;
+import com.project.reportsystem.exception.NotEqualsPasswordException;
 import com.project.reportsystem.exception.ReportFileException;
-import com.project.reportsystem.service.ActionService;
-import com.project.reportsystem.service.ReportService;
-import com.project.reportsystem.service.RequestService;
-import com.project.reportsystem.service.UserService;
+import com.project.reportsystem.service.*;
+import com.project.reportsystem.util.JsonHelper;
+import com.project.reportsystem.util.XmlHelper;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,271 +14,269 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 @AllArgsConstructor(onConstructor = @__(@Autowired))
-@Controller("/user")
+@Controller()
+@RequestMapping("/user")
 public class UserController {
-
-    private static final String PATH_TO_STORAGE = "C:\\spring-app\\src\\main\\webapp\\WEB-INF\\jsp\\files\\";
     private final UserService userService;
     private final RequestService requestService;
     private final ReportService reportService;
     private final ActionService actionService;
+    private final InspectorService inspectorService;
+    private final JsonHelper jsonHelper;
+    private final XmlHelper xmlHelper;
 
-    @GetMapping("/user")
+    @GetMapping("")
     public String mainPage() {
         return "redirect:/user/reports";
     }
 
-    @GetMapping("/user/profile")
+    @GetMapping("/profile")
     public String showProfile() {
-        return "user/u-profile";
+        return "u-profile";
     }
 
-    @PostMapping("user/confirm_profile")
-    public String confirmUpdateProfile(@ModelAttribute("user") @Valid User user,
-                                       BindingResult result, HttpSession session) {
+    @PostMapping("/confirm-profile")
+    public String confirmUpdateProfile(@Valid User user, BindingResult result, HttpSession session,
+                                       @RequestParam("password") String password,
+                                       @RequestParam("repeatedPassword") String repeatedPassword) {
         if (result.hasErrors()) {
-            return "user/u-update";
+            return "u-update";
         }
+
+        if (!Objects.equals(password, repeatedPassword)) {
+            throw new NotEqualsPasswordException("Your password was not equals");
+        }
+
+        user.setInspector(inspectorService.findByUserId(user.getId()));
         userService.updateInfo(user);
         session.setAttribute("user", user);
-        return "redirect:/user/update_profile";
+
+        return "redirect:/user/profile";
     }
 
-    @GetMapping("user/update_profile")
-    public String updateProfile() {
-        return "user/u-update";
+    @GetMapping("/update-profile")
+    public ModelAndView updateProfile(HttpSession session) {
+        ModelAndView modelAndView = new ModelAndView("u-update");
+        User user = getFromSession(session);
+        modelAndView.addObject("currentUser", user);
+
+        return modelAndView;
     }
 
-    @GetMapping("user/create_request")
-    public String createRequest() {
-        return "user/create-request";
+    @GetMapping("/create-request")
+    public ModelAndView createRequest() {
+        ModelAndView modelAndView = new ModelAndView("create-request");
+        modelAndView.addObject("request", new Request());
+
+        return modelAndView;
     }
 
-    @PostMapping("user/confirm_request")
-    public String confirmCreateRequest(@ModelAttribute("request") @Valid Request request,
+    @GetMapping("/inspector")
+    public ModelAndView showInspector(HttpSession session) {
+        ModelAndView modelAndView = new ModelAndView("show-inspector");
+        User user = getFromSession(session);
+        Inspector inspector = inspectorService.findByUserId(user.getId());
+        modelAndView.addObject("inspector", inspector);
+
+        return modelAndView;
+    }
+
+    @PostMapping("/confirm-request")
+    public String confirmCreateRequest(@Valid Request request,
                                        BindingResult result, HttpSession session) {
         if (result.hasErrors()) {
-            return "user/create_request";
+            return "create-request";
         }
 
-        User user = (User) session.getAttribute("user");
+        User user = getFromSession(session);
         request.setUser(user);
         requestService.createRequest(request);
-        return "redirect:/user/create_request";
+
+        return "redirect:/user/reports";
     }
 
-    @PostMapping("user/confirm_report")
-    public String confirmCreateReport(@ModelAttribute("report") @Valid ReportStructure reportStructure,
+    @PostMapping("/confirm-report")
+    public String confirmCreateReport(@Valid ReportStructure reportStructure,
                                       BindingResult result, HttpSession session) {
         if (result.hasErrors()) {
-            return "user/create_request";
+            return "create-report";
         }
-        LocalDateTime time = LocalDateTime.now();
-        File gsonFile = new File(PATH_TO_STORAGE + time.toLocalDate() +
-                "-" + time.toLocalTime().getNano() + ".json");
-        createReport(session, gsonFile, reportStructure);
-        return "redirect:/user/create_request";
+
+        createReport(session, reportStructure);
+
+        return "redirect:/user/reports";
     }
 
-    @PostMapping("user/confirm_report_file")
+    @PostMapping("/confirm-report-file")
     public String confirmCreateReportByFile(@RequestParam("file") MultipartFile file, HttpSession session) {
-        if (Objects.isNull(file) || !file.isEmpty()) {
-            try {
-                LocalDateTime time = LocalDateTime.now();
-                File transferFile = new File(PATH_TO_STORAGE + time.toLocalDate()
-                        + "-" + time.toLocalTime().getNano() + ".json");
-                String contentType = file.getContentType();
-                switch (contentType) {
-                    case "text/json":
-                    case "application/json": {
-                        forJson(transferFile, new String(file.getBytes()));
-                        createReport(session, transferFile);
-                        break;
-                    }
-                    case "application/xml":
-                    case "text/xml": {
-                        forXMl(transferFile, new String(file.getBytes()));
-                        createReport(session, transferFile);
-                        break;
-                    }
-                    default: {
-                        throw new ReportFileException("Your file was corrupted");
-                    }
+        validate(file);
+
+        try {
+            switch (file.getContentType()) {
+                case "text/json":
+                case "application/json": {
+                    String fileUrl = jsonHelper.createJsonFileByFileContent(new String(file.getBytes()));
+                    createReport(session, fileUrl);
+                    break;
                 }
-                return "redirect:/user/create_request";
-            } catch (IOException e) {
-                throw new ReportFileException("Your file was corrupted");
-            }
-        }
-        return "redirect:/user/create_request";
-    }
-
-    @GetMapping("/user/create_report")
-    public String createReport() {
-        return "user/create-report";
-    }
-
-    @GetMapping("/user/create_report_file")
-    public String createReportByFile() {
-        return "user/create-report-f";
-    }
-
-    @GetMapping("/user/reports")
-    public String showReports(HttpSession session, Model model,
-                              @PageableDefault(sort = {"id"},
-                                      direction = Sort.Direction.DESC) Pageable pageable) {
-        User user = (User) session.getAttribute("user");
-        Page<Report> all = reportService.findAllByUserId(user.getId(), pageable);
-        model.addAttribute("reports", all);
-        return "user/report-list";
-    }
-
-    @GetMapping("/user/report{id}")
-    public String showReportById(@PathVariable Long id, Model model) {
-        Report report = reportService.findById(id);
-        ReportStructure reportStructure = readFromJson(report);
-        model.addAttribute("report", reportStructure);
-        model.addAttribute("report_id", report.getId());
-        return "user/view_report";
-    }
-
-    @GetMapping("/user/update_report{id}")
-    public String showUpdateReportById(@PathVariable Long id, Model model) {
-        Report report = reportService.findById(id);
-        ReportStructure reportStructure = readFromJson(report);
-        model.addAttribute("report", reportStructure);
-        model.addAttribute("report_id", report.getId());
-        return "user/update-report";
-    }
-
-    @GetMapping("/user/update_report_by_file{id}")
-    public String showUpdateReportByFile(@PathVariable Long id, Model model) {
-        Report report = reportService.findById(id);
-        model.addAttribute("report_id", report.getId());
-        return "user/update-report-f";
-    }
-
-    @PostMapping("/user/confirm_update_report{id}")
-    public String confirmUpdateReportById(@PathVariable Long id,
-                                          @RequestParam("file") MultipartFile file) {
-        Report report = reportService.findById(id);
-        if (Objects.isNull(file) || !file.isEmpty()) {
-            try {
-                File transferFile = new File(report.getFileLink());
-                String contentType = file.getContentType();
-                switch (contentType) {
-                    case "text/json":
-                    case "application/json": {
-                        forJson(transferFile, new String(file.getBytes()));
-                        break;
-                    }
-                    case "application/xml":
-                    case "text/xml": {
-                        forXMl(transferFile, new String(file.getBytes()));
-                        break;
-                    }
-                    default: {
-                        throw new ReportFileException("Your file was corrupted");
-                    }
+                case "application/xml":
+                case "text/xml": {
+                    String fileUrl = xmlHelper.createXmlFileByFileContent(new String(file.getBytes()));
+                    createReport(session, fileUrl);
+                    break;
                 }
-                return "redirect:/user/create_request";
-            } catch (IOException e) {
-                throw new ReportFileException("Your file was corrupted");
+                default: {
+                    throw new ReportFileException("Your file has wrong structure");
+                }
             }
+        } catch (IOException e) {
+            throw new ReportFileException("Your file was corrupted");
         }
-        updateReport(report);
-        return "redirect:/user/create_request";
+
+        return "redirect:/user/reports";
     }
 
-    @PostMapping("/user/confirm_update_report_by_file{id}")
+    @PostMapping("/confirm-update-report-by-file/{id}")
     public String confirmUpdateReportByFile(@PathVariable Long id,
-                                            @ModelAttribute("report") @Valid ReportStructure reportStructure,
-                                            BindingResult result) {
-        if (result.hasErrors()) {
-            return "user/create_request";
-        }
+                                            @RequestParam("file") MultipartFile file) {
+        validate(file);
         Report report = reportService.findById(id);
-        writeJsonFile(new File(report.getFileLink()), reportStructure);
+
+        try {
+            File transferFile = new File(report.getFileLink());
+            switch (file.getContentType()) {
+                case "text/json":
+                case "application/json": {
+                    jsonHelper.updateJsonFileByFileContent(transferFile, new String(file.getBytes()));
+                    break;
+                }
+                case "application/xml":
+                case "text/xml": {
+                    xmlHelper.updateXmlFileByFileContent(transferFile, new String(file.getBytes()));
+                    break;
+                }
+                default: {
+                    throw new ReportFileException("Your file has wrong structure");
+                }
+            }
+        } catch (IOException e) {
+            throw new ReportFileException("Your file has wrong structure");
+        }
+
+
         updateReport(report);
-        return "redirect:/user/create_request";
+
+        return "redirect:/user/reports";
     }
 
-    @GetMapping("/user/report_history{id}")
-    public String showReportHistoryById(@PathVariable Long id, Model model,
-                                        @PageableDefault(sort = {"id"},
-                                                direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<Action> allForReportById = actionService.findAllForReportById(id, pageable);
-        model.addAttribute("actions", allForReportById);
-        model.addAttribute("report_id", id);
-        return "user/report-history";
+    @GetMapping("/create-report")
+    public ModelAndView createReport() {
+        ModelAndView modelAndView = new ModelAndView("create-report");
+        modelAndView.addObject("reportStructure", new ReportStructure());
+
+        return modelAndView;
     }
 
-    private void writeJsonFile(File file, ReportStructure reportStructure) {
-        try (Writer writer = new FileWriter(file)) {
-            Gson gson = new GsonBuilder().create();
-            gson.toJson(reportStructure, writer);
-        } catch (IOException e) {
-            throw new ReportFileException("Ur file was corrupted");
+    @GetMapping("/create-report-file")
+    public String createReportByFile() {
+        return "create-report-f";
+    }
+
+    @GetMapping("/reports")
+    public ModelAndView showReports(HttpSession session, @PageableDefault(sort = {"id"},
+            direction = Sort.Direction.DESC) Pageable pageable) {
+        ModelAndView modelAndView = new ModelAndView("report-list");
+        User user = getFromSession(session);
+        Page<Report> reports = reportService.findAllByUserId(user.getId(), pageable);
+        modelAndView.addObject("reports", reports);
+
+        return modelAndView;
+    }
+
+    @GetMapping("/report/{id}")
+    public ModelAndView showReportById(@PathVariable Long id) {
+        ModelAndView modelAndView = new ModelAndView("view_report");
+        setReportInView(id, modelAndView);
+
+        return modelAndView;
+    }
+
+    @GetMapping("/update-report/{id}")
+    public ModelAndView showUpdateReportById(@PathVariable Long id) {
+        ModelAndView modelAndView = new ModelAndView("update-report");
+        setReportInView(id, modelAndView);
+
+        return modelAndView;
+    }
+
+    @GetMapping("/update-report-by-file/{id}")
+    public ModelAndView showUpdateReportByFile(@PathVariable Long id) {
+        ModelAndView modelAndView = new ModelAndView("update-report-f");
+        Report report = reportService.findById(id);
+        modelAndView.addObject("reportId", report.getId());
+
+        return modelAndView;
+    }
+
+
+    @PostMapping("/confirm-update-report/{id}")
+    public String confirmUpdateReportById(@PathVariable Long id,
+                                          @Valid ReportStructure reportStructure,
+                                          BindingResult result) {
+        if (result.hasErrors()) {
+            return "update-report";
         }
+
+        Report report = reportService.findById(id);
+        jsonHelper.updateJsonFileByForm(new File(report.getFileLink()), reportStructure);
+        updateReport(report);
+        return "redirect:/user/report/" + id;
     }
 
-    private void forXMl(File file, String content) {
-        try (Writer writer = new FileWriter(file)) {
-            JAXBContext jaxbContext = JAXBContext.newInstance(ReportStructure.class);
-            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-            ReportStructure reportStructure = (ReportStructure) jaxbUnmarshaller.unmarshal(new StringReader(content));
-            Gson gson = new GsonBuilder().create();
-            gson.toJson(reportStructure, writer);
-        } catch (JAXBException | IOException e) {
-            throw new ReportFileException("Ur file was corrupted");
-        }
+    @GetMapping("/report-history/{id}")
+    public ModelAndView showReportHistoryById(@PathVariable Long id, @PageableDefault(sort = {"id"},
+            direction = Sort.Direction.DESC) Pageable pageable) {
+        ModelAndView modelAndView = new ModelAndView("report-history");
+        Page<Action> actions = actionService.findAllForReportById(id, pageable);
+        modelAndView.addObject("actions", actions);
+        modelAndView.addObject("reportId", id);
+
+        return modelAndView;
     }
 
-    private void forJson(File file, String content) {
-        Gson gson = new Gson();
-        ReportStructure reportStructure = gson.fromJson(content, ReportStructure.class);
-        try (Writer writer = new FileWriter(file)) {
-            gson = new GsonBuilder().create();
-            gson.toJson(reportStructure, writer);
-        } catch (IOException e) {
-            throw new ReportFileException("Ur file was corrupted");
-        }
-    }
-
-    private void createReport(HttpSession session, File file, ReportStructure reportStructure) {
-        User user = (User) session.getAttribute("user");
+    private void createReport(HttpSession session, ReportStructure reportStructure) {
+        User user = getFromSession(session);
+        String filePath = jsonHelper.createJsonFileByForm(reportStructure);
         Report report = Report.builder()
                 .user(user)
                 .status(ReportStatus.NEW)
                 .creationDate(LocalDateTime.now())
-                .fileLink(file.getAbsolutePath())
+                .fileLink(filePath)
                 .build();
-        writeJsonFile(file, reportStructure);
+
         reportService.addReportToUser(report, user);
     }
 
-    private void createReport(HttpSession session, File file) {
-        User user = (User) session.getAttribute("user");
+    private void createReport(HttpSession session, String fileUrl) {
+        User user = getFromSession(session);
         Report report = Report.builder()
                 .user(user)
                 .status(ReportStatus.NEW)
                 .creationDate(LocalDateTime.now())
-                .fileLink(file.getAbsolutePath())
+                .fileLink(fileUrl)
                 .build();
         reportService.addReportToUser(report, user);
     }
@@ -296,13 +292,24 @@ public class UserController {
         reportService.updateReport(updatedReport);
     }
 
-    private ReportStructure readFromJson(Report report) {
-        ReportStructure structure;
-        try (Reader reader = new FileReader(report.getFileLink())) {
-            structure = new Gson().fromJson(reader, ReportStructure.class);
-        } catch (IOException e) {
-            throw new ReportFileException("Ur file was corrupted");
+    private void setReportInView(Long reportId, ModelAndView modelAndView) {
+        Report report = reportService.findById(reportId);
+        ReportStructure reportStructure = jsonHelper.readFromJson(report.getFileLink());
+        modelAndView.addObject("reportStructure", reportStructure);
+        modelAndView.addObject("reportId", report.getId());
+    }
+
+    private User getFromSession(HttpSession session) {
+        return (User) session.getAttribute("user");
+    }
+
+    private void validate(MultipartFile file) {
+        if (Objects.isNull(file) || file.isEmpty()) {
+            throw new ReportFileException("Your file was corrupted");
         }
-        return structure;
+
+        if (Objects.isNull(file.getContentType())) {
+            throw new ReportFileException("Your file was corrupted");
+        }
     }
 }
