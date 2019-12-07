@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Created with Liquid Technologies Online Tools 1.0 (https://www.liquid-technologies.com) -->
+<root xsi:noNamespaceSchemaLocation="schema.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <fullName>Роик Максим Иванович</fullName>
+  <type>Онлайн торговля</type>
+  <innCode>1234567890</innCode>
+  <periodStart>2001-09-21</periodStart>
+  <periodEnd>1980-09-12</periodEnd>
+  <incomeCode>2110</incomeCode>
+  <incomeValue>88263</incomeValue>
+  <outcomeCode>2129</outcomeCode>
+  <outcomeValue>1150</outcomeValue>
+  <percentCode>2100</percentCode>
+  <percentValue>10801</percentValue>
+  <clearCode>2200</clearCode>
+  <clearValue>-</clearValue>
+</root>
