@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -36,7 +37,10 @@ public class InspectorController {
     private final JsonHelper jsonHelper;
 
     @GetMapping("")
-    public String mainPage() {
+    public String mainPage(HttpSession session) {
+        final Inspector user = (Inspector) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        session.setAttribute("user", user);
         return "redirect:/inspector/users";
     }
 

@@ -53,7 +53,7 @@
                             <span class="text-muted"></span></label>
                         <input required="required" name="surname" th:title="#{reg.nameHelp}" id="surname"
                                class="form-control"
-                               pattern="[A-Za-zА-Яа-яїіІЇ]{2,30}"
+                               pattern="([A-Z])([a-z]{1,40})|([А-ЯІЇЄ]([a-яіїє]{1,30}))"
                                th:placeholder="#{reg.fname}" type="text" th:value="${session.user.surname}">
                     </div>
 
@@ -61,7 +61,7 @@
                         <label for="name1" th:text="#{uprofile.name}">
                             <span class="text-muted"></span></label>
                         <input name="name" class="form-control" th:title="#{reg.nameHelp}" required
-                               pattern="[A-Za-zА-Яа-яїіІЇ]{2,30}"
+                               pattern="([A-Z])([a-z]{1,40})|([А-ЯІЇЄ]([a-яіїє]{1,30}))"
                                th:placeholder="#{reg.name}" type="text" id="name1" th:value="${session.user.name}">
                     </div>
 
@@ -69,7 +69,7 @@
                         <label th:text="#{uprofile.patron}">
                             <span class="text-muted"></span></label>
                         <input name="patronymic" class="form-control" th:title="#{reg.nameHelp}" required
-                               pattern="[A-Za-zА-Яа-яїіІЇ]{2,30}"
+                               pattern="([A-Z])([a-z]{1,40})|([А-ЯІЇЄ]([a-яіїє]{1,30}))"
                                th:placeholder="#{reg.patron}" th:value="${session.user.patronymic}">
                     </div>
 
@@ -91,14 +91,16 @@
                         <label for="password" th:text="#{uprofile.updatePass1}">
                             <span class="text-muted"></span></label>
                         <input id="password" name="password" class="form-control" required="required"
-                               pattern="[\s\S]{6,15}" th:title="#{reg.passHelp}" th:placeholder="#{reg.spassword}"
+                               pattern="([^\s][A-Za-z\d]{5,15})" th:title="#{reg.passHelp}"
+                               th:placeholder="#{reg.passHelp}"
                                type="password">
                     </div>
                     <div class="mb-3">
                         <label for="repeatedPassword" th:text="#{uprofile.updatePass2}">
                             <span class="text-muted"></span></label>
                         <input id="repeatedPassword" name="repeatedPassword" class="form-control" required="required"
-                               pattern="[\s\S]{6,15}" th:title="#{reg.passHelp}" th:placeholder="#{reg.spassword}"
+                               pattern="([^\s][A-Za-z\d]{5,15})" th:title="#{reg.passHelp}"
+                               th:placeholder="#{reg.spassword}"
                                type="password">
                     </div>
                     <button class="btn btn-primary btn-lg btn-block" style="width: 35%; position: relative; left: 35%;"

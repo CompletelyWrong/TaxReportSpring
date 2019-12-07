@@ -1,13 +1,15 @@
 package com.project.reportsystem.controller;
 
-import com.project.reportsystem.domain.Inspector;
 import com.project.reportsystem.domain.User;
 import com.project.reportsystem.entity.Role;
 import com.project.reportsystem.exception.NotEqualsPasswordException;
-import com.project.reportsystem.service.InspectorService;
 import com.project.reportsystem.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.util.Collection;
 import java.util.Objects;
 
 @AllArgsConstructor(onConstructor = @__(@Autowired))
@@ -25,21 +28,21 @@ import java.util.Objects;
 @RequestMapping("/")
 public class LoginAndRegisterController {
     private final UserService userService;
-    private final InspectorService inspectorService;
 
     @GetMapping("")
     public String mainPage() {
-        return "index";
+        return isAuthenticated() == null ? "index" : isAuthenticated();
     }
 
     @GetMapping("/login")
     public String loginForm() {
-        return "login";
+        return isAuthenticated() == null ? "login" : isAuthenticated();
     }
 
     @GetMapping("/register")
     public ModelAndView registerForm() {
-        ModelAndView modelAndView = new ModelAndView("register");
+        String viewName = isAuthenticated() == null ? "register" : isAuthenticated();
+        ModelAndView modelAndView = new ModelAndView(viewName);
         modelAndView.addObject("user", new User());
 
         return modelAndView;
@@ -50,35 +53,6 @@ public class LoginAndRegisterController {
         session.invalidate();
 
         return "redirect:/";
-    }
-
-    @PostMapping("/login")
-    public String signIn(@RequestParam("email") String email,
-                         @RequestParam("password") String password,
-                         @RequestParam(value = "worker", required = false) String isWorker,
-                         HttpSession session) {
-        Role role;
-
-        if (Objects.isNull(isWorker)) {
-            User user = userService.login(email, password);
-            role = user.getRole();
-            session.setAttribute("user", user);
-        } else {
-            Inspector inspector = inspectorService.login(email, password);
-            role = inspector.getRole();
-            session.setAttribute("user", inspector);
-        }
-        switch (role) {
-            case ADMIN:
-                return "redirect:/admin/";
-            case INSPECTOR:
-                return "redirect:/inspector/";
-            case INDIVIDUAL_TAXPAYER:
-            case LEGAL_TAXPAYER:
-                return "redirect:/user/";
-            default:
-                return "redirect:/";
-        }
     }
 
     @PostMapping("/signUp")
@@ -97,5 +71,23 @@ public class LoginAndRegisterController {
         userService.register(user);
 
         return "redirect:/";
+    }
+
+    private String isAuthenticated() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        Collection<? extends GrantedAuthority> roles = auth.getAuthorities();
+
+        if (!(auth instanceof AnonymousAuthenticationToken)) {
+            if (roles.contains(Role.INSPECTOR)) {
+                return "redirect:/inspector/";
+            }
+            if (roles.contains(Role.ADMIN)) {
+                return "redirect:/admin/";
+            }
+            if (roles.contains(Role.INDIVIDUAL_TAXPAYER) || roles.contains(Role.LEGAL_TAXPAYER)) {
+                return "redirect:/user/";
+            }
+        }
+        return null;
     }
 }

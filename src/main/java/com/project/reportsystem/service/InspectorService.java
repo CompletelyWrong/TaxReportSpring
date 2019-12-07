@@ -1,7 +1,6 @@
 package com.project.reportsystem.service;
 
 import com.project.reportsystem.domain.Inspector;
-import com.project.reportsystem.domain.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

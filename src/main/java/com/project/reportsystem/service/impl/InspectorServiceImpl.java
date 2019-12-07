@@ -135,4 +135,5 @@ public class InspectorServiceImpl implements InspectorService {
                     return new InspectorNotFoundException("There is no available inspectors in system");
                 });
     }
+
 }

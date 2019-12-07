@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
@@ -39,7 +40,10 @@ public class UserController {
     private final XmlHelper xmlHelper;
 
     @GetMapping("")
-    public String mainPage() {
+    public String mainPage(HttpSession session) {
+        final User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        session.setAttribute("user", user);
         return "redirect:/user/reports";
     }
 

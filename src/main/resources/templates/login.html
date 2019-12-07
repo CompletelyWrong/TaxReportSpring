@@ -41,8 +41,10 @@
                 <label for="password" th:text="#{log.pass}"></label>
             </div>
             <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input" value="worker" name="worker" id="worker">
-                <label class="custom-control-label" for="worker" th:text="#{log.worker}"></label>
+                <label th:if="${param.loginError != null}">
+                    <label class="text-danger" th:if="${param.loginError.contains('true')}"
+                           th:text="#{login.error}"></label>
+                </label>
             </div>
             <p ></p>
             <button class="btn btn-lg btn-primary btn-block" type="submit" th:text="#{log.submit}"></button>
