@@ -59,11 +59,15 @@ public class InspectorController {
     }
 
     @PostMapping("/update-profile")
-    public String confirmUpdateProfile(@Valid Inspector inspector, BindingResult result, HttpSession session,
-                                       @RequestParam("password") String password,
-                                       @RequestParam("repeatedPassword") String repeatedPassword) {
+    public ModelAndView confirmUpdateProfile(@Valid Inspector inspector, BindingResult result, HttpSession session,
+                                             @RequestParam("password") String password,
+                                             @RequestParam("repeatedPassword") String repeatedPassword) {
+        ModelAndView modelAndView = new ModelAndView();
         if (result.hasErrors()) {
-            return "i-update";
+            modelAndView.setViewName("i-update");
+            Inspector currentInspector = getFormSession(session);
+            modelAndView.addObject("currentInspector", currentInspector);
+            return modelAndView;
         }
 
         if (!Objects.equals(password, repeatedPassword)) {
@@ -72,8 +76,9 @@ public class InspectorController {
 
         inspectorService.updateInfo(inspector);
         session.setAttribute("user", inspector);
+        modelAndView.setViewName("redirect:/inspector/profile");
 
-        return "redirect:/inspector/profile";
+        return modelAndView;
     }
 
     @GetMapping("/users")

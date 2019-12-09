@@ -63,7 +63,7 @@ public class JsonHelperTest {
 
 
     @Test
-    public void createJsonFileByFormShouldThrowExceptionReportFileException() throws IOException {
+    public void createJsonFileByFormShouldThrowExceptionReportFileException() {
         expectedException.expect(ReportFileException.class);
         expectedException.expectMessage("Your file has wrong structure");
         jsonHelper.createJsonFileByForm(null);
