@@ -7,8 +7,6 @@ import org.springframework.data.domain.Pageable;
 public interface InspectorService {
     Inspector createInspector(Inspector inspector);
 
-    Inspector login(String login, String password);
-
     Inspector updateInfo(Inspector inspector);
 
     Inspector findByUserId(Long userId);

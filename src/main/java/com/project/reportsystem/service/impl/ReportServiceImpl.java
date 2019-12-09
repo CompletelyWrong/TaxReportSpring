@@ -58,14 +58,7 @@ public class ReportServiceImpl implements ReportService {
             throw new IllegalArgumentException("Report is null");
         }
 
-        Long reportId = reportRepository.findById(report.getId())
-                .map(ReportEntity::getId)
-                .orElseThrow(() -> {
-                    log.warn("There is no report with this such id");
-                    return new EntityNotFoundException("There is no report with this such id");
-                });
-
-        reportRepository.save(mapper.mapReportToReportEntity(report, reportId));
+        reportRepository.save(mapper.mapReportToReportEntity(report));
 
         return report;
     }
@@ -74,7 +67,7 @@ public class ReportServiceImpl implements ReportService {
     public Page<Report> findAllByUserId(Long userId, Pageable pageable) {
         if (Objects.isNull(userId) || Objects.isNull(pageable)) {
             log.warn("User id or Pageable is null");
-            throw new InvalidAddEntityException("User id or Pageable is null");
+            throw new IllegalArgumentException("User id or Pageable is null");
         }
 
         return reportRepository.findByEntityUserId(userId, pageable)

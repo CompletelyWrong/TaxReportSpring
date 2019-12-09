@@ -20,11 +20,11 @@ public class ReportMapper {
                 .build();
     }
 
-    public ReportEntity mapReportToReportEntity(Report report, Long reportId) {
+    public ReportEntity mapReportToReportEntity(Report report) {
         return ReportEntity.builder()
                 .creationDate(report.getCreationDate())
                 .fileLink(report.getFileLink())
-                .id(reportId)
+                .id(report.getId())
                 .status(report.getStatus())
                 .entityUser(UserEntity.builder()
                         .id(report.getUser().getId())

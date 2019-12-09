@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @Log4j
@@ -27,6 +28,11 @@ public class CustomUserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) {
+        if (Objects.isNull(email)) {
+            log.warn("Email id is null");
+            throw new IllegalArgumentException("Email id is null");
+        }
+
         final Optional<InspectorEntity> entity = inspectorRepository.findByEmail(email);
 
         if (!entity.isPresent()) {

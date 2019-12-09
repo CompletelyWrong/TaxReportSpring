@@ -9,8 +9,6 @@ public interface UserService {
 
     User findById(Long userId);
 
-    User login(String login, String password);
-
     Page<User> findAll(Pageable pageable);
 
     User updateInfo(User user);

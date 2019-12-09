@@ -64,26 +64,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User login(String email, String password) {
-        if (Objects.isNull(email) || Objects.isNull(password)) {
-            log.warn("Email / password id is null");
-            throw new IllegalArgumentException("Email / password id is null");
-        }
-
-        UserEntity entity = userRepository.findByEmail(email).orElseThrow(() -> {
-            log.warn("There is no user with this email");
-            return new EntityNotFoundException("There is no user with this email");
-        });
-
-        if (encoder.matches(password, entity.getPassword())) {
-            return mapper.mapUserEntityToUser(entity);
-        }
-
-        log.warn("Incorrect password");
-        throw new EntityNotFoundException("Incorrect password");
-    }
-
-    @Override
     public Page<User> findAll(Pageable pageable) {
         if (Objects.isNull(pageable)) {
             log.warn("Pageable is null");

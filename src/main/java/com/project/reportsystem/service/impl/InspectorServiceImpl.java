@@ -47,26 +47,6 @@ public class InspectorServiceImpl implements InspectorService {
     }
 
     @Override
-    public Inspector login(String email, String password) {
-        if (Objects.isNull(email) || Objects.isNull(password)) {
-            log.warn("Email / password id is null");
-            throw new IllegalArgumentException("Email / password id is null");
-        }
-
-        InspectorEntity entity = inspectorRepository.findByEmail(email).orElseThrow(() -> {
-            log.warn("There is no inspector with this such email");
-            return new EntityNotFoundException("There is no inspector with this such email");
-        });
-
-        if (encoder.matches(password, entity.getPassword())) {
-            return mapper.mapInspectorEntityToInspector(entity);
-        }
-
-        log.warn("Incorrect password");
-        throw new EntityNotFoundException("Incorrect password");
-    }
-
-    @Override
     public Inspector updateInfo(Inspector inspector) {
         if (Objects.isNull(inspector)) {
             log.warn("Inspector is null");
