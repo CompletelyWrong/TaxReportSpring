@@ -19,7 +19,7 @@ import java.util.Collections;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AbstractUser implements UserDetails {
+public abstract class AbstractUser implements UserDetails {
     private Long id;
 
     @NotEmpty(message = "Please provide email")
