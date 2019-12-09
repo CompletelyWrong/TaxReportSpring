@@ -8,6 +8,7 @@ import com.project.reportsystem.repository.UserRepository;
 import com.project.reportsystem.service.mapper.InspectorMapper;
 import com.project.reportsystem.service.mapper.UserMapper;
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Log4j
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class CustomUserDetailsServiceImpl implements UserDetailsService {
@@ -30,7 +32,7 @@ public class CustomUserDetailsServiceImpl implements UserDetailsService {
         if (!entity.isPresent()) {
             final Optional<UserEntity> userEntity = userRepository.findByEmail(email);
             if (!userEntity.isPresent()) {
-
+                log.warn("No user found with such email");
                 throw new EntityNotFoundException("No user found with such email");
             }
             return userMapper.mapUserEntityToUser(userEntity.get());
