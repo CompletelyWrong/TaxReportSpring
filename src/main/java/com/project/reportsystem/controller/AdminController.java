@@ -17,7 +17,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -54,13 +53,12 @@ public class AdminController {
 
     @PostMapping("/confirm-create")
     public String confirmCreatingInspector(@Valid Inspector inspector, BindingResult result,
-                                           @RequestParam("password") String password,
                                            @RequestParam("repeatedPassword") String repeatedPassword) {
         if (result.hasErrors()) {
             return "create-inspector";
         }
 
-        if (!Objects.equals(password, repeatedPassword)) {
+        if (!Objects.equals(inspector.getPassword(), repeatedPassword)) {
             throw new NotEqualsPasswordException("Your password was not equals");
         }
 
@@ -86,8 +84,7 @@ public class AdminController {
     }
 
     @GetMapping("/users")
-    public ModelAndView showUsers(Model model,
-                                  @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
+    public ModelAndView showUsers(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
         ModelAndView modelAndView = new ModelAndView("users-list");
         Page<User> users = userService.findAll(pageable);
         modelAndView.addObject("users", users);
@@ -96,8 +93,7 @@ public class AdminController {
     }
 
     @GetMapping("/requests")
-    public ModelAndView showRequest(Model model,
-                                    @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
+    public ModelAndView showRequest(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
         ModelAndView modelAndView = new ModelAndView("request-list");
         Page<Request> requests = requestService.findAll(pageable);
         modelAndView.addObject("requests", requests);
@@ -106,8 +102,7 @@ public class AdminController {
     }
 
     @GetMapping("/inspectors")
-    public ModelAndView showInspectors(Model model,
-                                       @PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
+    public ModelAndView showInspectors(@PageableDefault(sort = {"id"}, direction = Sort.Direction.DESC) Pageable pageable) {
         ModelAndView modelAndView = new ModelAndView("inspectors-list");
         Page<Inspector> inspectors = inspectorService.findAll(pageable);
         modelAndView.addObject("inspectors", inspectors);

@@ -58,13 +58,12 @@ public class LoginAndRegisterController {
     @PostMapping("/signUp")
     public String signUp(@Valid User user,
                          BindingResult result,
-                         @RequestParam("password") String password,
                          @RequestParam("repeatedPassword") String repeatedPassword) {
         if (result.hasErrors()) {
             return "register";
         }
 
-        if (!Objects.equals(password, repeatedPassword)) {
+        if (!Objects.equals(user.getPassword(), repeatedPassword)) {
             throw new NotEqualsPasswordException("Your password was not equals");
         }
 

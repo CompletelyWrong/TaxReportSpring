@@ -1,7 +1,5 @@
 package com.project.reportsystem.configuration;
 
-import com.project.reportsystem.service.InspectorService;
-import com.project.reportsystem.service.UserService;
 import com.project.reportsystem.service.impl.CustomUserDetailsServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +16,6 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableWebSecurity
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
-    private final UserService userService;
-    private final InspectorService inspectorService;
     private final CustomUserDetailsServiceImpl service;
     private BCryptPasswordEncoder encoder;
     private final LoginSuccessHandler loginSuccessHandler;
