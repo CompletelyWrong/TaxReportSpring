@@ -53,22 +53,26 @@ public class UserController {
     }
 
     @PostMapping("/confirm-profile")
-    public String confirmUpdateProfile(@Valid User user, BindingResult result, HttpSession session,
-                                       @RequestParam("password") String password,
-                                       @RequestParam("repeatedPassword") String repeatedPassword) {
+    public ModelAndView confirmUpdateProfile(@Valid User user, BindingResult result, HttpSession session,
+                                             @RequestParam("repeatedPassword") String repeatedPassword) {
+        ModelAndView modelAndView = new ModelAndView();
         if (result.hasErrors()) {
-            return "u-update";
+            modelAndView.setViewName("u-update");
+            User currentUser = getFromSession(session);
+            modelAndView.addObject("currentUser", currentUser);
+            return modelAndView;
         }
 
-        if (!Objects.equals(password, repeatedPassword)) {
+        if (!Objects.equals(user.getPassword(), repeatedPassword)) {
             throw new NotEqualsPasswordException("Your password was not equals");
         }
 
         user.setInspector(inspectorService.findByUserId(user.getId()));
         userService.updateInfo(user);
         session.setAttribute("user", user);
+        modelAndView.setViewName("redirect:/user/profile");
 
-        return "redirect:/user/profile";
+        return modelAndView;
     }
 
     @GetMapping("/update-profile")
