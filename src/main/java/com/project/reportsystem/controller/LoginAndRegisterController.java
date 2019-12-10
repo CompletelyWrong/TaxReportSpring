@@ -31,18 +31,20 @@ public class LoginAndRegisterController {
 
     @GetMapping("")
     public String mainPage() {
-        return isAuthenticated() == null ? "index" : isAuthenticated();
+        String viewName = isAuthenticated();
+        return viewName == null ? "index" : viewName;
     }
 
     @GetMapping("/login")
     public String loginForm() {
-        return isAuthenticated() == null ? "login" : isAuthenticated();
+        String viewName = isAuthenticated();
+        return viewName == null ? "login" : viewName;
     }
 
     @GetMapping("/register")
     public ModelAndView registerForm() {
-        String viewName = isAuthenticated() == null ? "register" : isAuthenticated();
-        ModelAndView modelAndView = new ModelAndView(viewName);
+        String viewName = isAuthenticated();
+        ModelAndView modelAndView = new ModelAndView(viewName == null ? "register" : viewName);
         modelAndView.addObject("user", new User());
 
         return modelAndView;
