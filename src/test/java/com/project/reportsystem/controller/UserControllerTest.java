@@ -117,7 +117,7 @@ public class UserControllerTest {
     public void showReportHistoryShouldShowActions() throws Exception {
         when(actionService.findAllForReportById(anyLong(), any(Pageable.class))).thenReturn(new PageImpl<>(singletonList(MOCK_ACTION)));
 
-        final ModelAndView modelAndView = mockMvc.perform(get("/user/report-history/{id}", "2")
+        final ModelAndView modelAndView = mockMvc.perform(get("/user/report-history/{id}", "3")
                 .sessionAttr("user", USER))
                 .andExpect(view().name("report-history"))
                 .andReturn().getModelAndView();
@@ -125,7 +125,7 @@ public class UserControllerTest {
         final Map<String, Object> model = Objects.requireNonNull(modelAndView).getModel();
 
         assertThat(model.get("actions"), is(not(emptyList())));
-        assertThat(model.get("reportId"), is(2L));
+        assertThat(model.get("reportId"), is(3L));
     }
 
 }
