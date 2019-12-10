@@ -80,12 +80,12 @@ public class LoginAndRegisterControllerTest {
     public void signUpShouldReturnRegisterPage() throws Exception {
         User user = User.builder()
                 .name("Name")
-                .password("userpass1")
+                .password("userpass2")
                 .build();
 
         mockMvc.perform(post("/signUp")
                 .flashAttr("user", user)
-                .param("repeatedPassword", "userpass1"))
+                .param("repeatedPassword", "userpass2"))
                 .andExpect(view().name("register"));
     }
 

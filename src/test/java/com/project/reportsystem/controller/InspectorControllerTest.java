@@ -183,7 +183,7 @@ public class InspectorControllerTest {
     public void confirmReportAssessmentShouldUpdateReport() throws Exception {
         when(reportService.findById(anyLong())).thenReturn(MOCK_REPORT);
 
-        mockMvc.perform(post("/inspector/confirm-report/{reportId}", "2")
+        mockMvc.perform(post("/inspector/confirm-report/{reportId}", "3")
                 .flashAttr("action", MOCK_ACTION)
                 .sessionAttr("user", INSPECTOR))
                 .andExpect(view().name("redirect:/inspector/users"));
